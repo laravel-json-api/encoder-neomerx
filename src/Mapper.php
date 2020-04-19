@@ -20,10 +20,13 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Encoder\Neomerx;
 
 use Generator;
+use LaravelJsonApi\Core\Contracts\Document\ResourceIdentifierObject;
 use LaravelJsonApi\Core\Document\Link;
 use LaravelJsonApi\Core\Document\Links;
 use Neomerx\JsonApi\Contracts\Factories\FactoryInterface;
+use Neomerx\JsonApi\Contracts\Schema\IdentifierInterface;
 use Neomerx\JsonApi\Contracts\Schema\LinkInterface;
+use Neomerx\JsonApi\Schema\Identifier;
 use function iterator_to_array;
 
 class Mapper
@@ -42,6 +45,22 @@ class Mapper
     public function __construct(FactoryInterface $factory)
     {
         $this->factory = $factory;
+    }
+
+    /**
+     * Convert a Laravel JSON API resource identifier to a Neomerx identifier.
+     *
+     * @param ResourceIdentifierObject $identifier
+     * @return IdentifierInterface
+     */
+    public function identifier(ResourceIdentifierObject $identifier): IdentifierInterface
+    {
+        return new Identifier(
+            $identifier->id(),
+            $identifier->type(),
+            $meta = $identifier->hasMeta(),
+            $meta ? $identifier->meta() : null
+        );
     }
 
     /**
@@ -80,8 +99,8 @@ class Mapper
         return $this->factory->createLink(
             false,
             $link->href()->toString(),
-            $link->hasMeta(),
-            $link->meta()->all()
+            $meta = $link->hasMeta(),
+            $meta ? $link->meta() : null
         );
     }
 }

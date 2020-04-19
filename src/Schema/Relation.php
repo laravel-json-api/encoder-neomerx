@@ -19,12 +19,23 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
+use Generator;
 use Illuminate\Contracts\Support\Arrayable;
 use LaravelJsonApi\Core\Contracts\Document\RelationshipObject;
+use LaravelJsonApi\Core\Contracts\Document\ResourceIdentifierObject;
+use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
+use LogicException;
 use Neomerx\JsonApi\Contracts\Schema\SchemaInterface;
+use function is_null;
 
-class Relation implements Arrayable
+/**
+ * Class Relation
+ *
+ * @package LaravelJsonApi\Encoder\Neomerx
+ * @internal
+ */
+final class Relation implements Arrayable
 {
 
     /**
@@ -50,17 +61,32 @@ class Relation implements Arrayable
     }
 
     /**
+     * @return ResourceObject|ResourceIdentifierObject|iterable|null
+     */
+    public function data()
+    {
+        $data = $this->relation->data();
+
+        if ($data instanceof ResourceObject || is_null($data)) {
+            return $data;
+        }
+
+        if ($data instanceof ResourceIdentifierObject) {
+            return $this->mapper->identifier($data);
+        }
+
+        return $this->cursor();
+    }
+
+    /**
      * @return array
      */
     public function toArray()
     {
-        $relation = [
-            SchemaInterface::RELATIONSHIP_LINKS_RELATED => false,
-            SchemaInterface::RELATIONSHIP_LINKS_SELF => false,
-        ];
+        $relation = [];
 
         if ($this->relation->showData()) {
-            $relation[SchemaInterface::RELATIONSHIP_DATA] = $this->relation->data();
+            $relation[SchemaInterface::RELATIONSHIP_DATA] = $this->data();
         }
 
         if ($this->relation->hasLinks()) {
@@ -70,11 +96,27 @@ class Relation implements Arrayable
         }
 
         if ($this->relation->hasMeta()) {
-            // @TODO check if this works by just returning the hash object.
-            $relation[SchemaInterface::RELATIONSHIP_META] = $this->relation->meta()->all();
+            $relation[SchemaInterface::RELATIONSHIP_META] = $this->relation->meta();
         }
 
         return $relation;
+    }
+
+    /**
+     * Iterate over the relation's data.
+     *
+     * @return Generator
+     */
+    private function cursor(): Generator
+    {
+        foreach ($this->relation->data() as $value) {
+            if ($value instanceof ResourceObject) {
+                yield $value;
+                continue;
+            }
+
+            throw new LogicException('Unrecognised relationship data.');
+        }
     }
 
 }

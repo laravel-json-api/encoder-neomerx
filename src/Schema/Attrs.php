@@ -19,13 +19,19 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
+use IteratorAggregate;
 use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
 use LaravelJsonApi\Core\Contracts\Document\Skippable;
-use LaravelJsonApi\Core\Document\ResourceObject\ConditionalAttr;
 use LaravelJsonApi\Core\Document\ResourceObject\ConditionalAttrs;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
-class Attrs implements \IteratorAggregate
+/**
+ * Class Attrs
+ *
+ * @package LaravelJsonApi\Encoder\Neomerx
+ * @internal
+ */
+final class Attrs implements IteratorAggregate
 {
 
     /**

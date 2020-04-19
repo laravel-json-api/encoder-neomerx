@@ -21,10 +21,22 @@ namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
 use IteratorAggregate;
 use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
+use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
-class Relationships implements IteratorAggregate
+/**
+ * Class Relationships
+ *
+ * @package LaravelJsonApi\Encoder\Neomerx
+ * @internal
+ */
+final class Relationships implements IteratorAggregate
 {
+
+    /**
+     * @var Mapper
+     */
+    private $mapper;
 
     /**
      * @var ResourceObject
@@ -39,11 +51,13 @@ class Relationships implements IteratorAggregate
     /**
      * Relationships constructor.
      *
+     * @param Mapper $mapper
      * @param ResourceObject $resource
      * @param ContextInterface $context
      */
-    public function __construct(ResourceObject $resource, ContextInterface $context)
+    public function __construct(Mapper $mapper, ResourceObject $resource, ContextInterface $context)
     {
+        $this->mapper = $mapper;
         $this->resource = $resource;
         $this->context = $context;
     }
@@ -53,7 +67,10 @@ class Relationships implements IteratorAggregate
      */
     public function getIterator()
     {
-
+        foreach ($this->resource->relationships() as $fieldName => $relation) {
+            $relation = new Relation($this->mapper, $relation);
+            yield $fieldName => $relation->toArray();
+        }
     }
 
 }

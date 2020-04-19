@@ -19,11 +19,15 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
+use InvalidArgumentException;
 use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
+use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LogicException;
-use Neomerx\JsonApi\Contracts\Factories\FactoryInterface;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
-use Neomerx\JsonApi\Schema\BaseSchema;
+use Neomerx\JsonApi\Contracts\Schema\LinkInterface;
+use Neomerx\JsonApi\Contracts\Schema\SchemaInterface;
+use function assert;
+use function sprintf;
 
 /**
  * Class Schema
@@ -31,8 +35,13 @@ use Neomerx\JsonApi\Schema\BaseSchema;
  * @package LaravelJsonApi\Encoder\Neomerx
  * @internal
  */
-class Schema extends BaseSchema
+final class Schema implements SchemaInterface
 {
+
+    /**
+     * @var Mapper
+     */
+    private $mapper;
 
     /**
      * @var string
@@ -42,16 +51,16 @@ class Schema extends BaseSchema
     /**
      * Schema constructor.
      *
-     * @param FactoryInterface $factory
+     * @param Mapper $mapper
      * @param string $type
      */
-    public function __construct(FactoryInterface $factory, string $type)
+    public function __construct(Mapper $mapper, string $type)
     {
         if (empty($type)) {
-            throw new \InvalidArgumentException('Expecting a non-empty resource type.');
+            throw new InvalidArgumentException('Expecting a non-empty resource type.');
         }
 
-        parent::__construct($factory);
+        $this->mapper = $mapper;
         $this->type = $type;
     }
 
@@ -64,16 +73,13 @@ class Schema extends BaseSchema
     }
 
     /**
-     * @param ResourceObject $resource
-     * @return string|null
+     * @inheritDoc
      */
     public function getId($resource): ?string
     {
-        if ($resource instanceof ResourceObject) {
-            return $resource->id();
-        }
+        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
 
-        throw new LogicException('Expecting a resource object.');
+        return $resource->id();
     }
 
     /**
@@ -85,13 +91,130 @@ class Schema extends BaseSchema
     }
 
     /**
-     * @param ResourceObject $resource
-     * @param ContextInterface $context
-     * @return iterable
+     * @inheritDoc
      */
     public function getRelationships($resource, ContextInterface $context): iterable
     {
-        return new Relationships($resource, $context);
+        return new Relationships($this->mapper, $resource, $context);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSelfLink($resource): LinkInterface
+    {
+        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+
+        if ($link = $resource->links()->get('self')) {
+            return $this->mapper->link($link);
+        }
+
+        throw new LogicException(sprintf(
+            'Resource object %s does not have a self link.',
+            $resource->type()
+        ));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getLinks($resource): iterable
+    {
+        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+
+        return $this->mapper->links($resource->links());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRelationshipSelfLink($resource, string $name): LinkInterface
+    {
+        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+
+        if ($link = $resource->relation($name)->links()->get('self')) {
+            return $this->mapper->link($link);
+        }
+
+        throw new LogicException(sprintf(
+            'Relation %s on resource object %s does not have a self link.',
+            $name,
+            $resource->type()
+        ));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRelationshipRelatedLink($resource, string $name): LinkInterface
+    {
+        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+
+        if ($link = $resource->relation($name)->links()->get('related')) {
+            return $this->mapper->link($link);
+        }
+
+        throw new LogicException(sprintf(
+            'Relation %s on resource object %s does not have a related link.',
+            $name,
+            $resource->type()
+        ));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasIdentifierMeta($resource): bool
+    {
+        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+
+        return $resource->identifier()->hasMeta();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getIdentifierMeta($resource)
+    {
+        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+
+        return $resource->identifier()->meta();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasResourceMeta($resource): bool
+    {
+        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+
+        return $resource->hasMeta();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getResourceMeta($resource)
+    {
+        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+
+        return $resource->meta();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isAddSelfLinkInRelationshipByDefault(string $relationshipName): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isAddRelatedLinkInRelationshipByDefault(string $relationshipName): bool
+    {
+        return false;
     }
 
 }

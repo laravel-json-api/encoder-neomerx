@@ -2,11 +2,14 @@
 
 namespace LaravelJsonApi\Encoder\Neomerx\Tests\Unit\Schema;
 
+use LaravelJsonApi\Core\Contracts\Document\RelationshipObject;
 use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
+use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LaravelJsonApi\Encoder\Neomerx\Schema\Attrs;
 use LaravelJsonApi\Encoder\Neomerx\Schema\Relationships;
 use LaravelJsonApi\Encoder\Neomerx\Schema\Schema;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
+use Neomerx\JsonApi\Contracts\Schema\SchemaInterface;
 use Neomerx\JsonApi\Factories\Factory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +39,7 @@ class SchemaTest extends TestCase
     {
         parent::setUp();
         $this->resourceObject = $this->createMock(ResourceObject::class);
-        $this->schema = new Schema(new Factory(), 'posts');
+        $this->schema = new Schema(new Mapper(new Factory()), 'posts');
         $this->context = $this->createMock(ContextInterface::class);
     }
 
@@ -70,6 +73,22 @@ class SchemaTest extends TestCase
 
     public function testRelationships(): void
     {
-        $this->markTestIncomplete('@TODO');
+        $relation = $this->createMock(RelationshipObject::class);
+        $relation->method('showData')->willReturn(true);
+        $relation->method('data')->willReturn(null);
+
+        $this->resourceObject
+            ->expects($this->once())
+            ->method('relationships')
+            ->willReturn(['foo' => $relation]);
+
+        $actual = $this->schema->getRelationships($this->resourceObject, $this->context);
+
+        $this->assertInstanceOf(Relationships::class, $actual);
+        $this->assertSame([
+            'foo' => [
+                SchemaInterface::RELATIONSHIP_DATA => null
+            ],
+        ], iterator_to_array($actual));
     }
 }

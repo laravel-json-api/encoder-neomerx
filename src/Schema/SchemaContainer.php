@@ -31,7 +31,7 @@ use Neomerx\JsonApi\Contracts\Schema\SchemaInterface;
  * @package LaravelJsonApi\Encoder\Neomerx
  * @internal
  */
-class SchemaContainer implements SchemaContainerInterface
+final class SchemaContainer implements SchemaContainerInterface
 {
 
     /**
