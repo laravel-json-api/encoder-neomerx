@@ -20,8 +20,9 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
 use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
+use LaravelJsonApi\Core\Contracts\Resources\Container;
+use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LogicException;
-use Neomerx\JsonApi\Contracts\Factories\FactoryInterface;
 use Neomerx\JsonApi\Contracts\Schema\SchemaContainerInterface;
 use Neomerx\JsonApi\Contracts\Schema\SchemaInterface;
 
@@ -35,9 +36,14 @@ final class SchemaContainer implements SchemaContainerInterface
 {
 
     /**
-     * @var FactoryInterface
+     * @var Container
      */
-    private $factory;
+    private $container;
+
+    /**
+     * @var Mapper
+     */
+    private $mapper;
 
     /**
      * @var array
@@ -47,11 +53,13 @@ final class SchemaContainer implements SchemaContainerInterface
     /**
      * SchemaContainer constructor.
      *
-     * @param FactoryInterface $factory
+     * @param Container $container
+     * @param Mapper $mapper
      */
-    public function __construct(FactoryInterface $factory)
+    public function __construct(Container $container, Mapper $mapper)
     {
-        $this->factory = $factory;
+        $this->container = $container;
+        $this->mapper = $mapper;
         $this->schemas = [];
     }
 
@@ -89,7 +97,7 @@ final class SchemaContainer implements SchemaContainerInterface
      */
     private function createSchema(string $type): SchemaInterface
     {
-        return new Schema($this->factory, $type);
+        return new Schema($this->container, $this->mapper, $type);
     }
 
 }

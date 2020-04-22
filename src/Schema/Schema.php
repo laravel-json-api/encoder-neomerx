@@ -21,6 +21,7 @@ namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
 use InvalidArgumentException;
 use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
+use LaravelJsonApi\Core\Contracts\Resources\Container;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LogicException;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
@@ -39,6 +40,11 @@ final class Schema implements SchemaInterface
 {
 
     /**
+     * @var Container
+     */
+    private $container;
+
+    /**
      * @var Mapper
      */
     private $mapper;
@@ -51,15 +57,17 @@ final class Schema implements SchemaInterface
     /**
      * Schema constructor.
      *
+     * @param Container $container
      * @param Mapper $mapper
      * @param string $type
      */
-    public function __construct(Mapper $mapper, string $type)
+    public function __construct(Container $container, Mapper $mapper, string $type)
     {
         if (empty($type)) {
             throw new InvalidArgumentException('Expecting a non-empty resource type.');
         }
 
+        $this->container = $container;
         $this->mapper = $mapper;
         $this->type = $type;
     }
@@ -95,7 +103,12 @@ final class Schema implements SchemaInterface
      */
     public function getRelationships($resource, ContextInterface $context): iterable
     {
-        return new Relationships($this->mapper, $resource, $context);
+        return new Relationships(
+            $this->container,
+            $this->mapper,
+            $resource,
+            $context
+        );
     }
 
     /**

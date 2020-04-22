@@ -19,13 +19,12 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
-use Generator;
-use Illuminate\Contracts\Support\Arrayable;
 use LaravelJsonApi\Core\Contracts\Document\RelationshipObject;
 use LaravelJsonApi\Core\Contracts\Document\ResourceIdentifierObject;
 use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
+use LaravelJsonApi\Core\Contracts\Resources\Container;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
-use LogicException;
+use Neomerx\JsonApi\Contracts\Schema\IdentifierInterface;
 use Neomerx\JsonApi\Contracts\Schema\SchemaInterface;
 use function is_null;
 
@@ -35,8 +34,13 @@ use function is_null;
  * @package LaravelJsonApi\Encoder\Neomerx
  * @internal
  */
-final class Relation implements Arrayable
+final class Relation
 {
+
+    /**
+     * @var Container
+     */
+    private $container;
 
     /**
      * @var Mapper
@@ -51,17 +55,19 @@ final class Relation implements Arrayable
     /**
      * Relation constructor.
      *
+     * @param Container $container
      * @param Mapper $mapper
      * @param RelationshipObject $object
      */
-    public function __construct(Mapper $mapper, RelationshipObject $object)
+    public function __construct(Container $container, Mapper $mapper, RelationshipObject $object)
     {
+        $this->container = $container;
         $this->mapper = $mapper;
         $this->relation = $object;
     }
 
     /**
-     * @return ResourceObject|ResourceIdentifierObject|iterable|null
+     * @return ResourceObject|IdentifierInterface|iterable|null
      */
     public function data()
     {
@@ -75,7 +81,7 @@ final class Relation implements Arrayable
             return $this->mapper->identifier($data);
         }
 
-        return $this->cursor();
+        return $this->container->resolve($data);
     }
 
     /**
@@ -100,23 +106,6 @@ final class Relation implements Arrayable
         }
 
         return $relation;
-    }
-
-    /**
-     * Iterate over the relation's data.
-     *
-     * @return Generator
-     */
-    private function cursor(): Generator
-    {
-        foreach ($this->relation->data() as $value) {
-            if ($value instanceof ResourceObject) {
-                yield $value;
-                continue;
-            }
-
-            throw new LogicException('Unrecognised relationship data.');
-        }
     }
 
 }
