@@ -19,18 +19,16 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx\Tests;
 
-use LaravelJsonApi\Core\Document\ResourceObject\ToOne;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
-class PostResource extends JsonApiResource
+class UserResource extends JsonApiResource
 {
-
     /**
      * @inheritDoc
      */
     public function type(): string
     {
-        return 'posts';
+        return 'users';
     }
 
     /**
@@ -38,10 +36,7 @@ class PostResource extends JsonApiResource
      */
     public function attributes(): iterable
     {
-        return [
-            'title' => $this->title,
-            'content' => $this->content,
-        ];
+        return ['name' => $this->name];
     }
 
     /**
@@ -49,14 +44,7 @@ class PostResource extends JsonApiResource
      */
     public function relationships(): iterable
     {
-        return [
-            'author' => new ToOne(
-                $this->author,
-                true,
-                $this->selfUrl(),
-                'author',
-            ),
-        ];
+        return [];
     }
 
     /**

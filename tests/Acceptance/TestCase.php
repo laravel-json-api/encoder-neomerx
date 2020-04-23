@@ -19,14 +19,14 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx\Tests\Acceptance;
 
+use LaravelJsonApi\Core\Contracts\Encoder\DocumentBuilder;
 use LaravelJsonApi\Core\Resources\Container;
 use LaravelJsonApi\Core\Resources\Factory;
-use LaravelJsonApi\Encoder\Neomerx\Document\Builder;
-use LaravelJsonApi\Encoder\Neomerx\Encoder;
-use LaravelJsonApi\Encoder\Neomerx\Mapper;
-use LaravelJsonApi\Encoder\Neomerx\Schema\SchemaContainer;
+use LaravelJsonApi\Encoder\Neomerx\EncoderService;
 use LaravelJsonApi\Encoder\Neomerx\Tests\Post;
 use LaravelJsonApi\Encoder\Neomerx\Tests\PostResource;
+use LaravelJsonApi\Encoder\Neomerx\Tests\User;
+use LaravelJsonApi\Encoder\Neomerx\Tests\UserResource;
 use Neomerx\JsonApi\Factories\Factory as NeomerxFactory;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
@@ -34,9 +34,9 @@ abstract class TestCase extends BaseTestCase
 {
 
     /**
-     * @var Builder
+     * @var DocumentBuilder
      */
-    protected $builder;
+    protected $encoder;
 
     /**
      * @return void
@@ -45,15 +45,13 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $mapper = new Mapper($neomerxFactory = new NeomerxFactory());
+        $service = new EncoderService(new NeomerxFactory());
 
         $container = new Container(new Factory([
             Post::class => PostResource::class,
+            User::class => UserResource::class,
         ]));
 
-        $this->builder = new Builder(
-            new Encoder($neomerxFactory, new SchemaContainer($container, $mapper)),
-            $mapper
-        );
+        $this->encoder = $service->encoder($container);
     }
 }
