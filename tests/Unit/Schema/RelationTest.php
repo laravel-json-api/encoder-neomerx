@@ -8,6 +8,7 @@ use LaravelJsonApi\Core\Document\Link;
 use LaravelJsonApi\Core\Document\Links;
 use LaravelJsonApi\Core\Document\ResourceObject\Identifier;
 use LaravelJsonApi\Core\Json\Hash;
+use LaravelJsonApi\Core\Resources\Container;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LaravelJsonApi\Encoder\Neomerx\Schema\Relation;
 use Neomerx\JsonApi\Contracts\Schema\SchemaInterface;
@@ -23,6 +24,11 @@ class RelationTest extends TestCase
      * @var RelationshipObject|MockObject
      */
     private $relationship;
+
+    /**
+     * @var Container|MockObject
+     */
+    private $container;
 
     /**
      * @var Relation
@@ -41,7 +47,11 @@ class RelationTest extends TestCase
     {
         parent::setUp();
         $this->relationship = $this->createMock(RelationshipObject::class);
-        $this->relation = new Relation(new Mapper($this->factory = new Factory()), $this->relationship);
+        $this->relation = new Relation(
+            $this->container = $this->createMock(Container::class),
+            new Mapper($this->factory = new Factory()),
+            $this->relationship
+        );
     }
 
     public function test(): void
@@ -138,12 +148,11 @@ class RelationTest extends TestCase
 
         $this->relationship->method('showData')->willReturn(true);
         $this->relationship->method('data')->willReturn($expected = [$related1, $related2]);
+        $this->container->method('resolve')->with($expected)->willReturn($expected);
 
         $actual = $this->relation->toArray();
 
         $this->assertArrayHasKey(SchemaInterface::RELATIONSHIP_DATA, $actual);
-
-        $actual[SchemaInterface::RELATIONSHIP_DATA] = iterator_to_array($actual[SchemaInterface::RELATIONSHIP_DATA]);
 
         $this->assertSame([
             SchemaInterface::RELATIONSHIP_DATA => $expected,

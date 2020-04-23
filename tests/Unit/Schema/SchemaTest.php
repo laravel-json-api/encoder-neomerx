@@ -4,6 +4,7 @@ namespace LaravelJsonApi\Encoder\Neomerx\Tests\Unit\Schema;
 
 use LaravelJsonApi\Core\Contracts\Document\RelationshipObject;
 use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
+use LaravelJsonApi\Core\Resources\Container;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LaravelJsonApi\Encoder\Neomerx\Schema\Attrs;
 use LaravelJsonApi\Encoder\Neomerx\Schema\Relationships;
@@ -23,6 +24,11 @@ class SchemaTest extends TestCase
     private $resourceObject;
 
     /**
+     * @var Container|MockObject
+     */
+    private $container;
+
+    /**
      * @var Schema
      */
     private $schema;
@@ -39,7 +45,8 @@ class SchemaTest extends TestCase
     {
         parent::setUp();
         $this->resourceObject = $this->createMock(ResourceObject::class);
-        $this->schema = new Schema(new Mapper(new Factory()), 'posts');
+        $this->container = $this->createMock(Container::class);
+        $this->schema = new Schema($this->container, new Mapper(new Factory()), 'posts');
         $this->context = $this->createMock(ContextInterface::class);
     }
 
