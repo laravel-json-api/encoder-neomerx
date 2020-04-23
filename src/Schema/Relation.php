@@ -24,6 +24,7 @@ use LaravelJsonApi\Core\Contracts\Document\ResourceIdentifierObject;
 use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
 use LaravelJsonApi\Core\Contracts\Resources\Container;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
+use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 use Neomerx\JsonApi\Contracts\Schema\IdentifierInterface;
 use Neomerx\JsonApi\Contracts\Schema\SchemaInterface;
 use function is_null;
@@ -53,17 +54,44 @@ final class Relation
     private $relation;
 
     /**
+     * @var SchemaFields
+     */
+    private $fields;
+
+    /**
+     * @var ContextInterface
+     */
+    private $context;
+
+    /**
+     * @var string
+     */
+    private $fieldName;
+
+    /**
      * Relation constructor.
      *
      * @param Container $container
      * @param Mapper $mapper
      * @param RelationshipObject $object
+     * @param SchemaFields $fields
+     * @param ContextInterface $context
+     * @param string $fieldName
      */
-    public function __construct(Container $container, Mapper $mapper, RelationshipObject $object)
-    {
+    public function __construct(
+        Container $container,
+        Mapper $mapper,
+        RelationshipObject $object,
+        SchemaFields $fields,
+        ContextInterface $context,
+        string $fieldName
+    ) {
         $this->container = $container;
         $this->mapper = $mapper;
         $this->relation = $object;
+        $this->fields = $fields;
+        $this->context = $context;
+        $this->fieldName = $fieldName;
     }
 
     /**
@@ -91,7 +119,7 @@ final class Relation
     {
         $relation = [];
 
-        if ($this->relation->showData()) {
+        if ($this->willShowData()) {
             $relation[SchemaInterface::RELATIONSHIP_DATA] = $this->data();
         }
 
@@ -106,6 +134,21 @@ final class Relation
         }
 
         return $relation;
+    }
+
+    /**
+     * @return bool
+     */
+    private function willShowData(): bool
+    {
+        if ($this->relation->showData()) {
+            return true;
+        }
+
+        return $this->fields->isRelationshipRequested(
+            $this->context->getPosition()->getPath(),
+            $this->fieldName
+        );
     }
 
 }

@@ -20,11 +20,10 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Encoder\Neomerx;
 
 use LaravelJsonApi\Core\Contracts\Encoder\DocumentBuilder;
+use LaravelJsonApi\Core\Contracts\Encoder\EncoderService as EncoderServiceContract;
 use LaravelJsonApi\Core\Contracts\Resources\Container;
 use LaravelJsonApi\Encoder\Neomerx\Document\Builder;
-use LaravelJsonApi\Encoder\Neomerx\Schema\SchemaContainer;
 use Neomerx\JsonApi\Factories\Factory;
-use LaravelJsonApi\Core\Contracts\Encoder\EncoderService as EncoderServiceContract;
 
 class EncoderService implements EncoderServiceContract
 {
@@ -49,11 +48,10 @@ class EncoderService implements EncoderServiceContract
      */
     public function encoder(Container $container): DocumentBuilder
     {
-        $mapper = new Mapper($this->factory);
-
         return new Builder(
-            new Encoder($this->factory, new SchemaContainer($container, $mapper)),
-            $mapper
+            $container,
+            $this->factory,
+            new Mapper($this->factory)
         );
     }
 }

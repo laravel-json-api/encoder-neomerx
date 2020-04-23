@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx\Tests;
 
-class Post
+class Comment
 {
 
     /**
@@ -30,42 +30,36 @@ class Post
     /**
      * @var string
      */
-    public $title;
-
-    /**
-     * @var string
-     */
     public $content;
 
     /**
      * @var User
      */
-    public $author;
+    public $user;
 
     /**
-     * @var array
+     * @var Post
      */
-    public $comments;
+    public $post;
 
     /**
-     * Post constructor.
+     * Comment constructor.
      *
      * @param string $id
-     * @param string $title
      * @param string $content
-     * @param User|null $author
+     * @param User $user
+     * @param Post $post
      */
     public function __construct(
         string $id,
-        string $title,
-        string $content = '...',
-        User $author = null
+        string $content,
+        User $user,
+        Post $post
     ) {
         $this->id = $id;
-        $this->title = $title;
         $this->content = $content;
-        $this->author = $author ?: new User('123', 'Frankie Manning');
-        $this->comments = [];
+        $this->user = $user;
+        $this->post = $post;
     }
 
     /**
@@ -74,16 +68,5 @@ class Post
     public function getRouteKey(): string
     {
         return $this->id;
-    }
-
-    /**
-     * @param Comment ...$comments
-     * @return $this
-     */
-    public function withComments(Comment ...$comments): self
-    {
-        $this->comments = $comments;
-
-        return $this;
     }
 }

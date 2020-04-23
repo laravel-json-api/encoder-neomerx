@@ -46,6 +46,11 @@ final class SchemaContainer implements SchemaContainerInterface
     private $mapper;
 
     /**
+     * @var SchemaFields
+     */
+    private $fields;
+
+    /**
      * @var array
      */
     private $schemas;
@@ -55,11 +60,16 @@ final class SchemaContainer implements SchemaContainerInterface
      *
      * @param Container $container
      * @param Mapper $mapper
+     * @param SchemaFields $fields
      */
-    public function __construct(Container $container, Mapper $mapper)
-    {
+    public function __construct(
+        Container $container,
+        Mapper $mapper,
+        SchemaFields $fields
+    ) {
         $this->container = $container;
         $this->mapper = $mapper;
+        $this->fields = $fields;
         $this->schemas = [];
     }
 
@@ -97,7 +107,7 @@ final class SchemaContainer implements SchemaContainerInterface
      */
     private function createSchema(string $type): SchemaInterface
     {
-        return new Schema($this->container, $this->mapper, $type);
+        return new Schema($this->container, $this->mapper, $this->fields, $type);
     }
 
 }

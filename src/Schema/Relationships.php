@@ -50,6 +50,11 @@ final class Relationships implements IteratorAggregate
     private $resource;
 
     /**
+     * @var SchemaFields
+     */
+    private $fields;
+
+    /**
      * @var ContextInterface
      */
     private $context;
@@ -60,17 +65,20 @@ final class Relationships implements IteratorAggregate
      * @param Container $container
      * @param Mapper $mapper
      * @param ResourceObject $resource
+     * @param SchemaFields $fields
      * @param ContextInterface $context
      */
     public function __construct(
         Container $container,
         Mapper $mapper,
         ResourceObject $resource,
+        SchemaFields $fields,
         ContextInterface $context
     ) {
         $this->container = $container;
         $this->mapper = $mapper;
         $this->resource = $resource;
+        $this->fields = $fields;
         $this->context = $context;
     }
 
@@ -80,8 +88,16 @@ final class Relationships implements IteratorAggregate
     public function getIterator()
     {
         foreach ($this->resource->relationships() as $fieldName => $relation) {
-            $relation = new Relation($this->container, $this->mapper, $relation);
-            yield $fieldName => $relation->toArray();
+            if ($this->fields->isFieldRequested($this->resource->type(), $fieldName)) {
+                yield $fieldName => (new Relation(
+                    $this->container,
+                    $this->mapper,
+                    $relation,
+                    $this->fields,
+                    $this->context,
+                    $fieldName
+                ))->toArray();
+            }
         }
     }
 

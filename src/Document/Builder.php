@@ -22,16 +22,27 @@ namespace LaravelJsonApi\Encoder\Neomerx\Document;
 use LaravelJsonApi\Core\Contracts\Document\DataDocument as DataDocumentContract;
 use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
 use LaravelJsonApi\Core\Contracts\Encoder\DocumentBuilder;
+use LaravelJsonApi\Core\Contracts\Resources\Container;
+use LaravelJsonApi\Core\Query\FieldSets;
+use LaravelJsonApi\Core\Query\IncludePaths;
 use LaravelJsonApi\Encoder\Neomerx\Encoder;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
+use LaravelJsonApi\Encoder\Neomerx\Schema\SchemaContainer;
+use LaravelJsonApi\Encoder\Neomerx\Schema\SchemaFields;
+use Neomerx\JsonApi\Factories\Factory;
 
 class Builder implements DocumentBuilder
 {
 
     /**
-     * @var Encoder
+     * @var Container
      */
-    private $encoder;
+    private $container;
+
+    /**
+     * @var Factory
+     */
+    private $factory;
 
     /**
      * @var Mapper
@@ -39,33 +50,37 @@ class Builder implements DocumentBuilder
     private $mapper;
 
     /**
-     * @var iterable|null
+     * @var IncludePaths
      */
     private $includePaths;
 
     /**
-     * @var array|null
+     * @var FieldSets
      */
     private $fieldSets;
 
     /**
-     * DocumentBuilder constructor.
+     * Builder constructor.
      *
-     * @param Encoder $encoder
+     * @param Container $container
+     * @param Factory $factory
      * @param Mapper $mapper
      */
-    public function __construct(Encoder $encoder, Mapper $mapper)
+    public function __construct(Container $container, Factory $factory, Mapper $mapper)
     {
-        $this->encoder = $encoder;
+        $this->container = $container;
+        $this->factory = $factory;
         $this->mapper = $mapper;
+        $this->includePaths = new IncludePaths();
+        $this->fieldSets = new FieldSets();
     }
 
     /**
      * @inheritDoc
      */
-    public function withIncludePaths(iterable $includePaths): DocumentBuilder
+    public function withIncludePaths($includePaths): DocumentBuilder
     {
-        $this->includePaths = $includePaths;
+        $this->includePaths = IncludePaths::cast($includePaths);
 
         return $this;
     }
@@ -73,9 +88,9 @@ class Builder implements DocumentBuilder
     /**
      * @inheritDoc
      */
-    public function withFieldSets(array $fieldSets): DocumentBuilder
+    public function withFieldSets($fieldSets): DocumentBuilder
     {
-        $this->fieldSets = $fieldSets;
+        $this->fieldSets = FieldSets::cast($fieldSets);
 
         return $this;
     }
@@ -86,11 +101,11 @@ class Builder implements DocumentBuilder
     public function createResource(?ResourceObject $data): DataDocumentContract
     {
         return new DataDocument(
-            $this->encoder,
+            $this->createEncoder(),
             $this->mapper,
             $data,
-            $this->includePaths ?: [],
-            $this->fieldSets ?: []
+            $this->includePaths,
+            $this->fieldSets
         );
     }
 
@@ -100,12 +115,28 @@ class Builder implements DocumentBuilder
     public function createResources(iterable $data): DataDocumentContract
     {
         return new DataDocument(
-            $this->encoder,
+            $this->createEncoder(),
             $this->mapper,
             $data,
-            $this->includePaths ?: [],
-            $this->fieldSets ?: []
+            $this->includePaths,
+            $this->fieldSets
         );
+    }
+
+    /**
+     * Create a new encoder instance.
+     *
+     * @return Encoder
+     */
+    private function createEncoder(): Encoder
+    {
+        $schemas = new SchemaContainer(
+            $this->container,
+            $this->mapper,
+            new SchemaFields($this->includePaths, $this->fieldSets)
+        );
+
+        return new Encoder($this->factory, $schemas);
     }
 
 }

@@ -22,6 +22,8 @@ namespace LaravelJsonApi\Encoder\Neomerx\Document;
 use LaravelJsonApi\Core\Contracts\Document\DataDocument as DataDocumentContract;
 use LaravelJsonApi\Core\Document\Concerns\HasLinks;
 use LaravelJsonApi\Core\Document\Concerns\HasMeta;
+use LaravelJsonApi\Core\Query\FieldSets;
+use LaravelJsonApi\Core\Query\IncludePaths;
 use LaravelJsonApi\Encoder\Neomerx\Encoder;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LogicException;
@@ -44,12 +46,12 @@ class DataDocument extends BaseDocument implements DataDocumentContract
     private $data;
 
     /**
-     * @var iterable
+     * @var IncludePaths
      */
     private $includePaths;
 
     /**
-     * @var array
+     * @var FieldSets
      */
     private $fieldSets;
 
@@ -60,23 +62,23 @@ class DataDocument extends BaseDocument implements DataDocumentContract
      * @param Mapper $mapper
      * @param mixed|iterable|null $data
      *      the data to encode.
-     * @param iterable $includePaths
+     * @param IncludePaths|null $includePaths
      *      the include paths used to load the data.
-     * @param array $fieldSets
+     * @param FieldSets|null $fieldSets
      *      the sparse field-sets used to load the data.
      */
     public function __construct(
         Encoder $encoder,
         Mapper $mapper,
         $data,
-        iterable $includePaths,
-        array $fieldSets
+        ?IncludePaths $includePaths,
+        ?FieldSets $fieldSets
     ) {
         parent::__construct($encoder);
         $this->mapper = $mapper;
         $this->data = $data;
-        $this->includePaths = $includePaths;
-        $this->fieldSets = $fieldSets;
+        $this->includePaths = $includePaths ?: new IncludePaths();
+        $this->fieldSets = $fieldSets ?: new FieldSets();
     }
 
     /**
@@ -132,8 +134,8 @@ class DataDocument extends BaseDocument implements DataDocumentContract
         }
 
         return $encoder
-            ->withIncludedPaths($this->includePaths)
-            ->withFieldSets($this->fieldSets);
+            ->withIncludedPaths($this->includePaths->toArray())
+            ->withFieldSets($this->fieldSets->toArray());
     }
 
 }

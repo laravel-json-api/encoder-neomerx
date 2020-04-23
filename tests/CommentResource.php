@@ -19,20 +19,18 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx\Tests;
 
-use LaravelJsonApi\Core\Document\ResourceObject\LazyRelation;
-use LaravelJsonApi\Core\Document\ResourceObject\ToMany;
+use LaravelJsonApi\Core\Document\ResourceObject\Identifier;
 use LaravelJsonApi\Core\Document\ResourceObject\ToOne;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
-class PostResource extends JsonApiResource
+class CommentResource extends JsonApiResource
 {
-
     /**
      * @inheritDoc
      */
     public function type(): string
     {
-        return 'posts';
+        return 'comments';
     }
 
     /**
@@ -41,7 +39,6 @@ class PostResource extends JsonApiResource
     public function attributes(): iterable
     {
         return [
-            'title' => $this->title,
             'content' => $this->content,
         ];
     }
@@ -52,16 +49,17 @@ class PostResource extends JsonApiResource
     public function relationships(): iterable
     {
         return [
-            'author' => new ToOne(
-                $this->author,
-                false,
+            'post' => new ToOne(
+                new Identifier('posts', $this->post->getRouteKey()),
+                true,
                 $this->selfUrl(),
-                'author',
+                'post'
             ),
-            'comments' => new LazyRelation(
-                function () { return $this->comments; },
+            'user' => new ToOne(
+                $this->user,
+                true,
                 $this->selfUrl(),
-                'comments'
+                'user'
             ),
         ];
     }
@@ -77,5 +75,6 @@ class PostResource extends JsonApiResource
             $this->id()
         );
     }
+
 
 }

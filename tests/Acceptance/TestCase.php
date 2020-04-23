@@ -23,6 +23,8 @@ use LaravelJsonApi\Core\Contracts\Encoder\DocumentBuilder;
 use LaravelJsonApi\Core\Resources\Container;
 use LaravelJsonApi\Core\Resources\Factory;
 use LaravelJsonApi\Encoder\Neomerx\EncoderService;
+use LaravelJsonApi\Encoder\Neomerx\Tests\Comment;
+use LaravelJsonApi\Encoder\Neomerx\Tests\CommentResource;
 use LaravelJsonApi\Encoder\Neomerx\Tests\Post;
 use LaravelJsonApi\Encoder\Neomerx\Tests\PostResource;
 use LaravelJsonApi\Encoder\Neomerx\Tests\User;
@@ -48,6 +50,7 @@ abstract class TestCase extends BaseTestCase
         $service = new EncoderService(new NeomerxFactory());
 
         $container = new Container(new Factory([
+            Comment::class => CommentResource::class,
             Post::class => PostResource::class,
             User::class => UserResource::class,
         ]));

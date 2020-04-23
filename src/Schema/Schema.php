@@ -50,6 +50,11 @@ final class Schema implements SchemaInterface
     private $mapper;
 
     /**
+     * @var SchemaFields
+     */
+    private $fields;
+
+    /**
      * @var string
      */
     private $type;
@@ -59,16 +64,22 @@ final class Schema implements SchemaInterface
      *
      * @param Container $container
      * @param Mapper $mapper
+     * @param SchemaFields $fields
      * @param string $type
      */
-    public function __construct(Container $container, Mapper $mapper, string $type)
-    {
+    public function __construct(
+        Container $container,
+        Mapper $mapper,
+        SchemaFields $fields,
+        string $type
+    ) {
         if (empty($type)) {
             throw new InvalidArgumentException('Expecting a non-empty resource type.');
         }
 
         $this->container = $container;
         $this->mapper = $mapper;
+        $this->fields = $fields;
         $this->type = $type;
     }
 
@@ -107,6 +118,7 @@ final class Schema implements SchemaInterface
             $this->container,
             $this->mapper,
             $resource,
+            $this->fields,
             $context
         );
     }
