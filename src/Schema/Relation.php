@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2020 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,11 +19,12 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
-use LaravelJsonApi\Core\Contracts\Document\RelationshipObject;
-use LaravelJsonApi\Core\Contracts\Document\ResourceIdentifierObject;
-use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
-use LaravelJsonApi\Core\Contracts\Resources\Container;
+use LaravelJsonApi\Contracts\Resources\Container;
+use LaravelJsonApi\Core\Document\ResourceIdentifier;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
+use LaravelJsonApi\Core\Json\Hash;
+use LaravelJsonApi\Core\Resources\JsonApiResource;
+use LaravelJsonApi\Core\Resources\Relation as ResourceRelation;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 use Neomerx\JsonApi\Contracts\Schema\IdentifierInterface;
 use Neomerx\JsonApi\Contracts\Schema\SchemaInterface;
@@ -32,7 +33,6 @@ use function is_null;
 /**
  * Class Relation
  *
- * @package LaravelJsonApi\Encoder\Neomerx
  * @internal
  */
 final class Relation
@@ -41,39 +41,39 @@ final class Relation
     /**
      * @var Container
      */
-    private $container;
+    private Container $container;
 
     /**
      * @var Mapper
      */
-    private $mapper;
+    private Mapper $mapper;
 
     /**
-     * @var RelationshipObject
+     * @var ResourceRelation
      */
-    private $relation;
+    private ResourceRelation $relation;
 
     /**
      * @var SchemaFields
      */
-    private $fields;
+    private SchemaFields $fields;
 
     /**
      * @var ContextInterface
      */
-    private $context;
+    private ContextInterface $context;
 
     /**
      * @var string
      */
-    private $fieldName;
+    private string $fieldName;
 
     /**
      * Relation constructor.
      *
      * @param Container $container
      * @param Mapper $mapper
-     * @param RelationshipObject $object
+     * @param ResourceRelation $object
      * @param SchemaFields $fields
      * @param ContextInterface $context
      * @param string $fieldName
@@ -81,7 +81,7 @@ final class Relation
     public function __construct(
         Container $container,
         Mapper $mapper,
-        RelationshipObject $object,
+        ResourceRelation $object,
         SchemaFields $fields,
         ContextInterface $context,
         string $fieldName
@@ -95,17 +95,17 @@ final class Relation
     }
 
     /**
-     * @return ResourceObject|IdentifierInterface|iterable|null
+     * @return JsonApiResource|IdentifierInterface|iterable|null
      */
     public function data()
     {
         $data = $this->relation->data();
 
-        if ($data instanceof ResourceObject || is_null($data)) {
+        if ($data instanceof JsonApiResource || is_null($data)) {
             return $data;
         }
 
-        if ($data instanceof ResourceIdentifierObject) {
+        if ($data instanceof ResourceIdentifier) {
             return $this->mapper->identifier($data);
         }
 
@@ -115,22 +115,24 @@ final class Relation
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $relation = [];
+        $links = $this->relation->links();
+        $meta = new Hash($this->relation->meta() ?: []);
 
         if ($this->willShowData()) {
             $relation[SchemaInterface::RELATIONSHIP_DATA] = $this->data();
         }
 
-        if ($this->relation->hasLinks()) {
+        if ($links->isNotEmpty()) {
             $relation[SchemaInterface::RELATIONSHIP_LINKS] = $this->mapper->allLinks(
                 $this->relation->links()
             );
         }
 
-        if ($this->relation->hasMeta()) {
-            $relation[SchemaInterface::RELATIONSHIP_META] = $this->relation->meta();
+        if ($meta->isNotEmpty()) {
+            $relation[SchemaInterface::RELATIONSHIP_META] = $meta;
         }
 
         return $relation;

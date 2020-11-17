@@ -20,37 +20,36 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
 use IteratorAggregate;
-use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
-use LaravelJsonApi\Core\Contracts\Document\Skippable;
-use LaravelJsonApi\Core\Document\ResourceObject\ConditionalAttrs;
+use LaravelJsonApi\Contracts\Resources\Skippable;
+use LaravelJsonApi\Core\Resources\ConditionalAttrs;
+use LaravelJsonApi\Core\Resources\JsonApiResource;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
 /**
  * Class Attrs
  *
- * @package LaravelJsonApi\Encoder\Neomerx
  * @internal
  */
 final class Attrs implements IteratorAggregate
 {
 
     /**
-     * @var ResourceObject
+     * @var JsonApiResource
      */
-    private $resource;
+    private JsonApiResource $resource;
 
     /**
      * @var ContextInterface
      */
-    private $context;
+    private ContextInterface $context;
 
     /**
      * Attrs constructor.
      *
-     * @param ResourceObject $resource
+     * @param JsonApiResource $resource
      * @param ContextInterface $context
      */
-    public function __construct(ResourceObject $resource, ContextInterface $context)
+    public function __construct(JsonApiResource $resource, ContextInterface $context)
     {
         $this->resource = $resource;
         $this->context = $context;

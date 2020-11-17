@@ -2,9 +2,9 @@
 
 namespace LaravelJsonApi\Encoder\Neomerx\Tests\Unit\Schema;
 
-use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
-use LaravelJsonApi\Core\Document\ResourceObject\ConditionalAttr;
-use LaravelJsonApi\Core\Document\ResourceObject\ConditionalAttrs;
+use LaravelJsonApi\Core\Resources\JsonApiResource;
+use LaravelJsonApi\Core\Resources\ConditionalAttr;
+use LaravelJsonApi\Core\Resources\ConditionalAttrs;
 use LaravelJsonApi\Encoder\Neomerx\Schema\Attrs;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +29,7 @@ class AttrsTest extends TestCase
             ]),
         ];
 
-        $resource = $this->createMock(ResourceObject::class);
+        $resource = $this->createMock(JsonApiResource::class);
         $resource->expects($this->once())->method('attributes')->willReturn($attrs);
         $context = $this->createMock(ContextInterface::class);
 

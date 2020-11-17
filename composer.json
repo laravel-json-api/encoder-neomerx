@@ -26,15 +26,13 @@
     "repositories": [
         {
             "type": "path",
-            "url": "../core/",
-            "options": {
-                "symlink": true
-            }
+            "url": "../core/"
         }
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^7.4",
         "ext-json": "*",
+        "illuminate/support": "^8.0",
         "laravel-json-api/core": "*",
         "neomerx/json-api": "^4.0"
     },

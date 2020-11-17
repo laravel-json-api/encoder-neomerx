@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2020 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,26 +19,26 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx;
 
-use LaravelJsonApi\Core\Contracts\Encoder\DocumentBuilder;
-use LaravelJsonApi\Core\Contracts\Encoder\EncoderService as EncoderServiceContract;
-use LaravelJsonApi\Core\Contracts\Resources\Container;
-use LaravelJsonApi\Encoder\Neomerx\Document\Builder;
-use Neomerx\JsonApi\Factories\Factory;
+use LaravelJsonApi\Contracts\Encoder\Encoder as EncoderContract;
+use LaravelJsonApi\Contracts\Encoder\Factory as FactoryContract;
+use LaravelJsonApi\Contracts\Server\Server;
+use LaravelJsonApi\Encoder\Neomerx\Mapper;
+use Neomerx\JsonApi\Contracts\Factories\FactoryInterface;
 
-class EncoderService implements EncoderServiceContract
+class Factory implements FactoryContract
 {
 
     /**
-     * @var Factory
+     * @var FactoryInterface
      */
-    private $factory;
+    private FactoryInterface $factory;
 
     /**
-     * EncoderService constructor.
+     * Factory constructor.
      *
-     * @param Factory $factory
+     * @param FactoryInterface $factory
      */
-    public function __construct(Factory $factory)
+    public function __construct(FactoryInterface $factory)
     {
         $this->factory = $factory;
     }
@@ -46,10 +46,10 @@ class EncoderService implements EncoderServiceContract
     /**
      * @inheritDoc
      */
-    public function encoder(Container $container): DocumentBuilder
+    public function build(Server $server): EncoderContract
     {
-        return new Builder(
-            $container,
+        return new Encoder(
+            $server->resources(),
             $this->factory,
             new Mapper($this->factory)
         );

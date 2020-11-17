@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2020 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,45 +17,49 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\Encoder\Neomerx\Tests;
+namespace LaravelJsonApi\Encoder\Neomerx;
 
-use LaravelJsonApi\Core\Resources\JsonApiResource;
+use LaravelJsonApi\Core\Document\JsonApi;
+use LaravelJsonApi\Encoder\Neomerx\Encoder\Encoder as ExtendedEncoder;
 
-class UserResource extends JsonApiResource
+class CompoundDocument extends Document
 {
+
     /**
-     * @inheritDoc
+     * @var mixed
      */
-    public function type(): string
+    private $data;
+
+    /**
+     * CompoundDocument constructor.
+     *
+     * @param ExtendedEncoder $encoder
+     * @param Mapper $mapper
+     * @param mixed $data
+     */
+    public function __construct(ExtendedEncoder $encoder, Mapper $mapper, $data)
     {
-        return 'users';
+        parent::__construct($encoder, $mapper);
+        $this->data = $data;
     }
 
     /**
      * @inheritDoc
      */
-    public function attributes(): iterable
+    protected function serialize(): array
     {
-        return ['name' => $this->name];
+        return $this->encoder()->serializeData(
+            $this->data
+        );
     }
 
     /**
      * @inheritDoc
      */
-    public function relationships(): iterable
+    protected function encode(): string
     {
-        return [];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function selfUrl(): string
-    {
-        return sprintf(
-            'http://example.com/api/v1/%s/%s',
-            $this->type(),
-            $this->id()
+        return $this->encoder()->encodeData(
+            $this->data
         );
     }
 

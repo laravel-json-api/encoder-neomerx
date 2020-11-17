@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2020 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,9 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
-use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
-use LaravelJsonApi\Core\Contracts\Resources\Container;
+use LaravelJsonApi\Contracts\Resources\Container;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
+use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LogicException;
 use Neomerx\JsonApi\Contracts\Schema\SchemaContainerInterface;
 use Neomerx\JsonApi\Contracts\Schema\SchemaInterface;
@@ -29,7 +29,6 @@ use Neomerx\JsonApi\Contracts\Schema\SchemaInterface;
 /**
  * Class SchemaContainer
  *
- * @package LaravelJsonApi\Encoder\Neomerx
  * @internal
  */
 final class SchemaContainer implements SchemaContainerInterface
@@ -38,22 +37,22 @@ final class SchemaContainer implements SchemaContainerInterface
     /**
      * @var Container
      */
-    private $container;
+    private Container $container;
 
     /**
      * @var Mapper
      */
-    private $mapper;
+    private Mapper $mapper;
 
     /**
      * @var SchemaFields
      */
-    private $fields;
+    private SchemaFields $fields;
 
     /**
      * @var array
      */
-    private $schemas;
+    private array $schemas;
 
     /**
      * SchemaContainer constructor.
@@ -74,12 +73,12 @@ final class SchemaContainer implements SchemaContainerInterface
     }
 
     /**
-     * @param ResourceObject $resourceObject
+     * @param JsonApiResource $resourceObject
      * @return SchemaInterface
      */
     public function getSchema($resourceObject): SchemaInterface
     {
-        if (!$resourceObject instanceof ResourceObject) {
+        if (!$resourceObject instanceof JsonApiResource) {
             throw new LogicException('Expecting a resource object.');
         }
 
@@ -98,7 +97,7 @@ final class SchemaContainer implements SchemaContainerInterface
      */
     public function hasSchema($resourceObject): bool
     {
-        return $resourceObject instanceof ResourceObject;
+        return $resourceObject instanceof JsonApiResource;
     }
 
     /**

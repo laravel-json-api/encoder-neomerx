@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2020 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +20,9 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Encoder\Neomerx;
 
 use Generator;
-use LaravelJsonApi\Core\Contracts\Document\ResourceIdentifierObject;
 use LaravelJsonApi\Core\Document\Link;
 use LaravelJsonApi\Core\Document\Links;
+use LaravelJsonApi\Core\Document\ResourceIdentifier;
 use Neomerx\JsonApi\Contracts\Factories\FactoryInterface;
 use Neomerx\JsonApi\Contracts\Schema\IdentifierInterface;
 use Neomerx\JsonApi\Contracts\Schema\LinkInterface;
@@ -35,7 +35,7 @@ class Mapper
     /**
      * @var FactoryInterface
      */
-    private $factory;
+    private FactoryInterface $factory;
 
     /**
      * Mapper constructor.
@@ -50,10 +50,10 @@ class Mapper
     /**
      * Convert a Laravel JSON API resource identifier to a Neomerx identifier.
      *
-     * @param ResourceIdentifierObject $identifier
+     * @param ResourceIdentifier $identifier
      * @return IdentifierInterface
      */
-    public function identifier(ResourceIdentifierObject $identifier): IdentifierInterface
+    public function identifier(ResourceIdentifier $identifier): IdentifierInterface
     {
         return new Identifier(
             $identifier->id(),

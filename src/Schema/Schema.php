@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2020 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +20,9 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
 use InvalidArgumentException;
-use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
-use LaravelJsonApi\Core\Contracts\Resources\Container;
+use LaravelJsonApi\Contracts\Resources\Container;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
+use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LogicException;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 use Neomerx\JsonApi\Contracts\Schema\LinkInterface;
@@ -33,7 +33,6 @@ use function sprintf;
 /**
  * Class Schema
  *
- * @package LaravelJsonApi\Encoder\Neomerx
  * @internal
  */
 final class Schema implements SchemaInterface
@@ -42,22 +41,22 @@ final class Schema implements SchemaInterface
     /**
      * @var Container
      */
-    private $container;
+    private Container $container;
 
     /**
      * @var Mapper
      */
-    private $mapper;
+    private Mapper $mapper;
 
     /**
      * @var SchemaFields
      */
-    private $fields;
+    private SchemaFields $fields;
 
     /**
      * @var string
      */
-    private $type;
+    private string $type;
 
     /**
      * Schema constructor.
@@ -96,7 +95,7 @@ final class Schema implements SchemaInterface
      */
     public function getId($resource): ?string
     {
-        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
 
         return $resource->id();
     }
@@ -128,7 +127,7 @@ final class Schema implements SchemaInterface
      */
     public function getSelfLink($resource): LinkInterface
     {
-        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
 
         if ($link = $resource->links()->get('self')) {
             return $this->mapper->link($link);
@@ -145,7 +144,7 @@ final class Schema implements SchemaInterface
      */
     public function getLinks($resource): iterable
     {
-        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
 
         return $this->mapper->links($resource->links());
     }
@@ -155,9 +154,9 @@ final class Schema implements SchemaInterface
      */
     public function getRelationshipSelfLink($resource, string $name): LinkInterface
     {
-        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
 
-        if ($link = $resource->relation($name)->links()->get('self')) {
+        if ($link = $resource->relationship($name)->links()->get('self')) {
             return $this->mapper->link($link);
         }
 
@@ -173,9 +172,9 @@ final class Schema implements SchemaInterface
      */
     public function getRelationshipRelatedLink($resource, string $name): LinkInterface
     {
-        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
 
-        if ($link = $resource->relation($name)->links()->get('related')) {
+        if ($link = $resource->relationship($name)->links()->get('related')) {
             return $this->mapper->link($link);
         }
 
@@ -191,7 +190,7 @@ final class Schema implements SchemaInterface
      */
     public function hasIdentifierMeta($resource): bool
     {
-        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
 
         return $resource->identifier()->hasMeta();
     }
@@ -201,7 +200,7 @@ final class Schema implements SchemaInterface
      */
     public function getIdentifierMeta($resource)
     {
-        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
 
         return $resource->identifier()->meta();
     }
@@ -211,7 +210,7 @@ final class Schema implements SchemaInterface
      */
     public function hasResourceMeta($resource): bool
     {
-        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
 
         return $resource->hasMeta();
     }
@@ -221,7 +220,7 @@ final class Schema implements SchemaInterface
      */
     public function getResourceMeta($resource)
     {
-        assert($resource instanceof ResourceObject, 'Expecting a resource object.');
+        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
 
         return $resource->meta();
     }

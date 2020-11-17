@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2020 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,15 +20,14 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
 use IteratorAggregate;
-use LaravelJsonApi\Core\Contracts\Document\ResourceObject;
-use LaravelJsonApi\Core\Contracts\Resources\Container;
+use LaravelJsonApi\Contracts\Resources\Container;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
+use LaravelJsonApi\Core\Resources\JsonApiResource;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
 /**
  * Class Relationships
  *
- * @package LaravelJsonApi\Encoder\Neomerx
  * @internal
  */
 final class Relationships implements IteratorAggregate
@@ -37,41 +36,41 @@ final class Relationships implements IteratorAggregate
     /**
      * @var Container
      */
-    private $container;
+    private Container $container;
 
     /**
      * @var Mapper
      */
-    private $mapper;
+    private Mapper $mapper;
 
     /**
-     * @var ResourceObject
+     * @var JsonApiResource
      */
-    private $resource;
+    private JsonApiResource $resource;
 
     /**
      * @var SchemaFields
      */
-    private $fields;
+    private SchemaFields $fields;
 
     /**
      * @var ContextInterface
      */
-    private $context;
+    private ContextInterface $context;
 
     /**
      * Relationships constructor.
      *
      * @param Container $container
      * @param Mapper $mapper
-     * @param ResourceObject $resource
+     * @param JsonApiResource $resource
      * @param SchemaFields $fields
      * @param ContextInterface $context
      */
     public function __construct(
         Container $container,
         Mapper $mapper,
-        ResourceObject $resource,
+        JsonApiResource $resource,
         SchemaFields $fields,
         ContextInterface $context
     ) {
@@ -87,7 +86,10 @@ final class Relationships implements IteratorAggregate
      */
     public function getIterator()
     {
-        foreach ($this->resource->relationships() as $fieldName => $relation) {
+        /** @var \LaravelJsonApi\Core\Resources\Relation $relation */
+        foreach ($this->resource->relationships() as $relation) {
+            $fieldName = $relation->fieldName();
+
             if ($this->fields->isFieldRequested($this->resource->type(), $fieldName)) {
                 yield $fieldName => (new Relation(
                     $this->container,
