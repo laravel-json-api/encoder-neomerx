@@ -19,8 +19,8 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx;
 
-use LaravelJsonApi\Contracts\Encoder\JsonApiDocument as DocumentContract;
 use LaravelJsonApi\Contracts\Encoder\Encoder as EncoderContract;
+use LaravelJsonApi\Contracts\Encoder\JsonApiDocument as DocumentContract;
 use LaravelJsonApi\Contracts\Resources\Container;
 use LaravelJsonApi\Core\Document\JsonApi;
 use LaravelJsonApi\Core\Query\FieldSets;
@@ -107,9 +107,13 @@ class Encoder implements EncoderContract
     /**
      * @inheritDoc
      */
-    public function withResource(?JsonApiResource $resource): DocumentContract
+    public function withResource(?object $resource): DocumentContract
     {
-        return $this->withData($resource);
+        if (is_object($resource) && !$resource instanceof JsonApiResource) {
+            $resource = $this->resources->create($resource);
+        }
+
+        return $this->createCompoundDocument($resource);
     }
 
     /**
@@ -117,20 +121,9 @@ class Encoder implements EncoderContract
      */
     public function withResources(iterable $resources): DocumentContract
     {
-        return $this->withData(
+        return $this->createCompoundDocument(
             $this->resources->cursor($resources)
         );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function withData($data): DocumentContract
-    {
-        $document = new CompoundDocument($this->createNeomerxEncoder(), $this->mapper, $data);
-        $document->withJsonApi($this->version);
-
-        return $document;
     }
 
     /**
@@ -146,6 +139,18 @@ class Encoder implements EncoderContract
             $identifiers
         );
 
+        $document->withJsonApi($this->version);
+
+        return $document;
+    }
+
+    /**
+     * @param mixed $data
+     * @return DocumentContract
+     */
+    private function createCompoundDocument($data): DocumentContract
+    {
+        $document = new CompoundDocument($this->createNeomerxEncoder(), $this->mapper, $data);
         $document->withJsonApi($this->version);
 
         return $document;
