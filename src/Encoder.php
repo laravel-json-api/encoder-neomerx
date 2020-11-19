@@ -22,6 +22,7 @@ namespace LaravelJsonApi\Encoder\Neomerx;
 use LaravelJsonApi\Contracts\Encoder\JsonApiDocument as DocumentContract;
 use LaravelJsonApi\Contracts\Encoder\Encoder as EncoderContract;
 use LaravelJsonApi\Contracts\Resources\Container;
+use LaravelJsonApi\Core\Document\JsonApi;
 use LaravelJsonApi\Core\Query\FieldSets;
 use LaravelJsonApi\Core\Query\IncludePaths;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
@@ -49,6 +50,11 @@ class Encoder implements EncoderContract
     private Mapper $mapper;
 
     /**
+     * @var JsonApi
+     */
+    private JsonApi $version;
+
+    /**
      * @var IncludePaths|null
      */
     private ?IncludePaths $includePaths = null;
@@ -64,12 +70,18 @@ class Encoder implements EncoderContract
      * @param Container $container
      * @param FactoryInterface $factory
      * @param Mapper $mapper
+     * @param JsonApi $version
      */
-    public function __construct(Container $container, FactoryInterface $factory, Mapper $mapper)
-    {
+    public function __construct(
+        Container $container,
+        FactoryInterface $factory,
+        Mapper $mapper,
+        JsonApi $version
+    ) {
         $this->resources = $container;
         $this->factory = $factory;
         $this->mapper = $mapper;
+        $this->version = $version;
     }
 
     /**
@@ -115,7 +127,10 @@ class Encoder implements EncoderContract
      */
     public function withData($data): DocumentContract
     {
-        return new CompoundDocument($this->createNeomerxEncoder(), $this->mapper, $data);
+        $document = new CompoundDocument($this->createNeomerxEncoder(), $this->mapper, $data);
+        $document->withJsonApi($this->version);
+
+        return $document;
     }
 
     /**
@@ -123,13 +138,17 @@ class Encoder implements EncoderContract
      */
     public function withIdentifiers(object $resource, string $fieldName, $identifiers): DocumentContract
     {
-        return new RelationshipDocument(
+        $document = new RelationshipDocument(
             $this->createNeomerxEncoder(),
             $this->mapper,
             $resource,
             $fieldName,
             $identifiers
         );
+
+        $document->withJsonApi($this->version);
+
+        return $document;
     }
 
     /**

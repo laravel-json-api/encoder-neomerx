@@ -51,7 +51,8 @@ class Factory implements FactoryContract
         return new Encoder(
             $server->resources(),
             $this->factory,
-            new Mapper($this->factory)
+            new Mapper($this->factory),
+            $server->jsonApi()
         );
     }
 }

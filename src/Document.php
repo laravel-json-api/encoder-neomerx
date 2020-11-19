@@ -39,9 +39,9 @@ abstract class Document implements JsonApiDocument
     private Mapper $mapper;
 
     /**
-     * @var JsonApi
+     * @var JsonApi|null
      */
-    private JsonApi $jsonApi;
+    private ?JsonApi $jsonApi;
 
     /**
      * @var Links|null
@@ -63,7 +63,6 @@ abstract class Document implements JsonApiDocument
     {
         $this->encoder = $encoder;
         $this->mapper = $mapper;
-        $this->withJsonApi(new JsonApi('1.0'));
     }
 
     /**
@@ -81,7 +80,19 @@ abstract class Document implements JsonApiDocument
      */
     public function withJsonApi($jsonApi): self
     {
-        $this->jsonApi = JsonApi::cast($jsonApi);
+        if ($value = JsonApi::nullable($jsonApi)) {
+            $this->jsonApi = $jsonApi;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withoutJsonApi(): JsonApiDocument
+    {
+        $this->jsonApi = null;
 
         return $this;
     }
@@ -99,9 +110,29 @@ abstract class Document implements JsonApiDocument
     /**
      * @inheritDoc
      */
+    public function withoutLinks(): JsonApiDocument
+    {
+        $this->links = null;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function withMeta($meta): self
     {
         $this->meta = Hash::cast($meta);
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withoutMeta(): JsonApiDocument
+    {
+        $this->meta = null;
 
         return $this;
     }
@@ -171,11 +202,11 @@ abstract class Document implements JsonApiDocument
      */
     private function prepareEncoder(): void
     {
-        if ($version = $this->jsonApi->version()) {
+        if ($this->jsonApi && $version = $this->jsonApi->version()) {
             $this->encoder->withJsonApiVersion($version);
         }
 
-        if ($this->jsonApi->hasMeta()) {
+        if ($this->jsonApi && $this->jsonApi->hasMeta()) {
             $this->encoder->withJsonApiMeta($this->jsonApi->meta());
         }
 
