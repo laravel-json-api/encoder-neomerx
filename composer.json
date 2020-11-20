@@ -7,9 +7,9 @@
         "jsonapi",
         "laravel"
     ],
-    "homepage": "https://github.com/laravel-json-api/{NAME}",
+    "homepage": "https://github.com/laravel-json-api/encoder-neomerx",
     "support": {
-        "issues": "https://github.com/laravel-json-api/{NAME}/issues"
+        "issues": "https://github.com/laravel-json-api/encoder-neomerx/issues"
     },
     "license": "Apache-2.0",
     "authors": [
