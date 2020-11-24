@@ -212,7 +212,7 @@ final class Schema implements SchemaInterface
     {
         assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
 
-        return $resource->hasMeta();
+        return !empty($resource->meta());
     }
 
     /**
