@@ -21,13 +21,13 @@ namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
 use InvalidArgumentException;
 use LaravelJsonApi\Contracts\Resources\Container;
-use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
+use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LogicException;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 use Neomerx\JsonApi\Contracts\Schema\LinkInterface;
 use Neomerx\JsonApi\Contracts\Schema\SchemaInterface;
-use function assert;
+use UnexpectedValueException;
 use function sprintf;
 
 /**
@@ -95,9 +95,11 @@ final class Schema implements SchemaInterface
      */
     public function getId($resource): ?string
     {
-        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
+        if ($resource instanceof JsonApiResource) {
+            return $resource->id();
+        }
 
-        return $resource->id();
+        throw new UnexpectedValueException('Expecting a resource object.');
     }
 
     /**
@@ -127,7 +129,9 @@ final class Schema implements SchemaInterface
      */
     public function getSelfLink($resource): LinkInterface
     {
-        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
+        if (!$resource instanceof JsonApiResource) {
+            throw new UnexpectedValueException('Expecting a resource object.');
+        }
 
         if ($link = $resource->links()->get('self')) {
             return $this->mapper->link($link);
@@ -144,9 +148,11 @@ final class Schema implements SchemaInterface
      */
     public function getLinks($resource): iterable
     {
-        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
+        if ($resource instanceof JsonApiResource) {
+            return $this->mapper->links($resource->links());
+        }
 
-        return $this->mapper->links($resource->links());
+        throw new UnexpectedValueException('Expecting a resource object.');
     }
 
     /**
@@ -154,7 +160,9 @@ final class Schema implements SchemaInterface
      */
     public function getRelationshipSelfLink($resource, string $name): LinkInterface
     {
-        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
+        if (!$resource instanceof JsonApiResource) {
+            throw new UnexpectedValueException('Expecting a resource object.');
+        }
 
         if ($link = $resource->relationship($name)->links()->get('self')) {
             return $this->mapper->link($link);
@@ -172,7 +180,9 @@ final class Schema implements SchemaInterface
      */
     public function getRelationshipRelatedLink($resource, string $name): LinkInterface
     {
-        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
+        if (!$resource instanceof JsonApiResource) {
+            throw new UnexpectedValueException('Expecting a resource object.');
+        }
 
         if ($link = $resource->relationship($name)->links()->get('related')) {
             return $this->mapper->link($link);
@@ -190,9 +200,7 @@ final class Schema implements SchemaInterface
      */
     public function hasIdentifierMeta($resource): bool
     {
-        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
-
-        return $resource->identifier()->hasMeta();
+        throw new LogicException('Expecting parser to skip Schema::hasIdentifierMeta.');
     }
 
     /**
@@ -200,9 +208,11 @@ final class Schema implements SchemaInterface
      */
     public function getIdentifierMeta($resource)
     {
-        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
+        if ($resource instanceof JsonApiResource) {
+            return $resource->identifier()->meta();
+        }
 
-        return $resource->identifier()->meta();
+        throw new UnexpectedValueException('Expecting a resource object.');
     }
 
     /**
@@ -210,9 +220,7 @@ final class Schema implements SchemaInterface
      */
     public function hasResourceMeta($resource): bool
     {
-        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
-
-        return !empty($resource->meta());
+        throw new LogicException('Expecting parser to skip Schema::hasResourceMeta.');
     }
 
     /**
@@ -220,9 +228,11 @@ final class Schema implements SchemaInterface
      */
     public function getResourceMeta($resource)
     {
-        assert($resource instanceof JsonApiResource, 'Expecting a resource object.');
+        if ($resource instanceof JsonApiResource) {
+            return $resource->meta();
+        }
 
-        return $resource->meta();
+        throw new UnexpectedValueException('Expecting a resource object.');
     }
 
     /**

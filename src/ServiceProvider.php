@@ -21,10 +21,9 @@ namespace LaravelJsonApi\Encoder\Neomerx;
 
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use LaravelJsonApi\Contracts\Encoder\Factory as EncoderFactoryContract;
 use LaravelJsonApi\Encoder\Neomerx\Factory as EncoderFactory;
 use Neomerx\JsonApi\Contracts\Factories\FactoryInterface;
-use Neomerx\JsonApi\Factories\Factory as NeomerxFactory;
-use LaravelJsonApi\Contracts\Encoder\Factory as EncoderFactoryContract;
 
 class ServiceProvider extends BaseServiceProvider implements DeferrableProvider
 {
@@ -48,6 +47,6 @@ class ServiceProvider extends BaseServiceProvider implements DeferrableProvider
     public function register(): void
     {
         $this->app->bind(EncoderFactoryContract::class, EncoderFactory::class);
-        $this->app->bind(FactoryInterface::class, NeomerxFactory::class);
+        $this->app->bind(FactoryInterface::class, Factory\Factory::class);
     }
 }
