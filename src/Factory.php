@@ -22,7 +22,6 @@ namespace LaravelJsonApi\Encoder\Neomerx;
 use LaravelJsonApi\Contracts\Encoder\Encoder as EncoderContract;
 use LaravelJsonApi\Contracts\Encoder\Factory as FactoryContract;
 use LaravelJsonApi\Contracts\Server\Server;
-use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use Neomerx\JsonApi\Contracts\Factories\FactoryInterface;
 
 class Factory implements FactoryContract
