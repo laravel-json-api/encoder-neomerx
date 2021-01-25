@@ -1,15 +1,15 @@
 {
     "name": "laravel-json-api/encoder-neomerx",
-    "description": "Encode JSON API resources using the neomerx/json-api package.",
+    "description": "Encode JSON:API resources using the neomerx/json-api package.",
     "keywords": [
         "jsonapi.org",
         "json-api",
         "jsonapi",
         "laravel"
     ],
-    "homepage": "https://github.com/laravel-json-api/{NAME}",
+    "homepage": "https://github.com/laravel-json-api/encoder-neomerx",
     "support": {
-        "issues": "https://github.com/laravel-json-api/{NAME}/issues"
+        "issues": "https://github.com/laravel-json-api/encoder-neomerx/issues"
     },
     "license": "Apache-2.0",
     "authors": [
@@ -23,11 +23,14 @@
         }
     ],
     "require": {
-        "php": "^7.4",
-        "ext-json": "*"
+        "php": "^7.4|^8.0",
+        "ext-json": "*",
+        "illuminate/support": "^8.0",
+        "laravel-json-api/core": "^1.0@alpha",
+        "neomerx/json-api": "^4.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.4"
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
@@ -41,11 +44,10 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.x-dev",
             "dev-develop": "1.x-dev"
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
         "sort-packages": true
