@@ -20,8 +20,8 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
 use LaravelJsonApi\Contracts\Resources\Container;
-use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
+use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LogicException;
 use Neomerx\JsonApi\Contracts\Schema\SchemaContainerInterface;
 use Neomerx\JsonApi\Contracts\Schema\SchemaInterface;

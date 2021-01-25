@@ -21,8 +21,8 @@ namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
 use IteratorAggregate;
 use LaravelJsonApi\Contracts\Resources\Container;
-use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
+use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
 /**

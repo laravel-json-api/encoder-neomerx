@@ -19,7 +19,6 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx;
 
-use LaravelJsonApi\Core\Document\JsonApi;
 use LaravelJsonApi\Encoder\Neomerx\Encoder\Encoder as ExtendedEncoder;
 
 class CompoundDocument extends Document

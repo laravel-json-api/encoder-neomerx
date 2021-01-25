@@ -2,9 +2,9 @@
 
 namespace LaravelJsonApi\Encoder\Neomerx\Tests\Unit\Schema;
 
-use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LaravelJsonApi\Core\Resources\ConditionalAttr;
 use LaravelJsonApi\Core\Resources\ConditionalAttrs;
+use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LaravelJsonApi\Encoder\Neomerx\Schema\Attrs;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 use PHPUnit\Framework\TestCase;
