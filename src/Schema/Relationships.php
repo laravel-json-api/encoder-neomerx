@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2020 Cloud Creativity Limited
+ * Copyright 2021 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
 use IteratorAggregate;
 use LaravelJsonApi\Contracts\Resources\Container;
-use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
+use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
 /**
