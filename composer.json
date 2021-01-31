@@ -45,6 +45,11 @@
     "extra": {
         "branch-alias": {
             "dev-develop": "1.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "LaravelJsonApi\\Encoder\\Neomerx\\ServiceProvider"
+            ]
         }
     },
     "minimum-stability": "stable",
