@@ -31,7 +31,7 @@ class PackageTest extends TestCase
 
         $this->assertArrayHasKey('laravel', $json['extra']);
         $this->assertSame(
-            ['providers' => [ServiceProvider::class,]],
+            ['providers' => [ServiceProvider::class]],
             $json['extra']['laravel']
         );
     }
