@@ -19,8 +19,10 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
+use Illuminate\Http\Request;
 use InvalidArgumentException;
 use LaravelJsonApi\Contracts\Resources\Container;
+use LaravelJsonApi\Core\Resources\ConditionalIterator;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use LogicException;
@@ -59,18 +61,25 @@ final class Schema implements SchemaInterface
     private string $type;
 
     /**
+     * @var Request|null
+     */
+    private $request;
+
+    /**
      * Schema constructor.
      *
      * @param Container $container
      * @param Mapper $mapper
      * @param SchemaFields $fields
      * @param string $type
+     * @param Request|null $request
      */
     public function __construct(
         Container $container,
         Mapper $mapper,
         SchemaFields $fields,
-        string $type
+        string $type,
+        $request
     ) {
         if (empty($type)) {
             throw new InvalidArgumentException('Expecting a non-empty resource type.');
@@ -80,6 +89,7 @@ final class Schema implements SchemaInterface
         $this->mapper = $mapper;
         $this->fields = $fields;
         $this->type = $type;
+        $this->request = $request;
     }
 
     /**
@@ -107,7 +117,11 @@ final class Schema implements SchemaInterface
      */
     public function getAttributes($resource, ContextInterface $context): iterable
     {
-        return new Attrs($resource, $context);
+        if ($resource instanceof JsonApiResource) {
+            return new ConditionalIterator($resource->attributes($this->request));
+        }
+
+        throw new UnexpectedValueException('Expecting a resource object.');
     }
 
     /**
@@ -120,7 +134,8 @@ final class Schema implements SchemaInterface
             $this->mapper,
             $resource,
             $this->fields,
-            $context
+            $context,
+            $this->request,
         );
     }
 
@@ -149,7 +164,7 @@ final class Schema implements SchemaInterface
     public function getLinks($resource): iterable
     {
         if ($resource instanceof JsonApiResource) {
-            return $this->mapper->links($resource->links());
+            return $this->mapper->links($resource->links($this->request));
         }
 
         throw new UnexpectedValueException('Expecting a resource object.');
@@ -229,7 +244,7 @@ final class Schema implements SchemaInterface
     public function getResourceMeta($resource)
     {
         if ($resource instanceof JsonApiResource) {
-            return $resource->meta();
+            return new ConditionalIterator($resource->meta($this->request));
         }
 
         throw new UnexpectedValueException('Expecting a resource object.');

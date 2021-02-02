@@ -19,8 +19,10 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
+use Illuminate\Http\Request;
 use IteratorAggregate;
 use LaravelJsonApi\Contracts\Resources\Container;
+use LaravelJsonApi\Contracts\Resources\JsonApiRelation;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
@@ -59,6 +61,11 @@ final class Relationships implements IteratorAggregate
     private ContextInterface $context;
 
     /**
+     * @var Request|null
+     */
+    private $request;
+
+    /**
      * Relationships constructor.
      *
      * @param Container $container
@@ -66,19 +73,22 @@ final class Relationships implements IteratorAggregate
      * @param JsonApiResource $resource
      * @param SchemaFields $fields
      * @param ContextInterface $context
+     * @param Request|null $request
      */
     public function __construct(
         Container $container,
         Mapper $mapper,
         JsonApiResource $resource,
         SchemaFields $fields,
-        ContextInterface $context
+        ContextInterface $context,
+        $request
     ) {
         $this->container = $container;
         $this->mapper = $mapper;
         $this->resource = $resource;
         $this->fields = $fields;
         $this->context = $context;
+        $this->request = $request;
     }
 
     /**
@@ -86,8 +96,8 @@ final class Relationships implements IteratorAggregate
      */
     public function getIterator()
     {
-        /** @var \LaravelJsonApi\Core\Resources\Relation $relation */
-        foreach ($this->resource->relationships() as $relation) {
+        /** @var JsonApiRelation $relation */
+        foreach ($this->resource->relationships($this->request) as $relation) {
             $fieldName = $relation->fieldName();
 
             if ($this->fields->isFieldRequested($this->resource->type(), $fieldName)) {

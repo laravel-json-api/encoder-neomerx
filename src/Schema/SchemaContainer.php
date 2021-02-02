@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
+use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Resources\Container;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
@@ -50,6 +51,11 @@ final class SchemaContainer implements SchemaContainerInterface
     private SchemaFields $fields;
 
     /**
+     * @var Request|null
+     */
+    private $request;
+
+    /**
      * @var array
      */
     private array $schemas;
@@ -60,15 +66,18 @@ final class SchemaContainer implements SchemaContainerInterface
      * @param Container $container
      * @param Mapper $mapper
      * @param SchemaFields $fields
+     * @param Request|null $request
      */
     public function __construct(
         Container $container,
         Mapper $mapper,
-        SchemaFields $fields
+        SchemaFields $fields,
+        $request
     ) {
         $this->container = $container;
         $this->mapper = $mapper;
         $this->fields = $fields;
+        $this->request = $request;
         $this->schemas = [];
     }
 
@@ -106,7 +115,13 @@ final class SchemaContainer implements SchemaContainerInterface
      */
     private function createSchema(string $type): SchemaInterface
     {
-        return new Schema($this->container, $this->mapper, $this->fields, $type);
+        return new Schema(
+            $this->container,
+            $this->mapper,
+            $this->fields,
+            $type,
+            $this->request,
+        );
     }
 
 }

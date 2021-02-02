@@ -20,10 +20,10 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 
 use LaravelJsonApi\Contracts\Resources\Container;
+use LaravelJsonApi\Contracts\Resources\JsonApiRelation;
 use LaravelJsonApi\Core\Document\ResourceIdentifier;
 use LaravelJsonApi\Core\Json\Hash;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
-use LaravelJsonApi\Core\Resources\Relation as ResourceRelation;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 use Neomerx\JsonApi\Contracts\Schema\IdentifierInterface;
@@ -49,9 +49,9 @@ final class Relation
     private Mapper $mapper;
 
     /**
-     * @var ResourceRelation
+     * @var JsonApiRelation
      */
-    private ResourceRelation $relation;
+    private JsonApiRelation $relation;
 
     /**
      * @var SchemaFields
@@ -73,7 +73,7 @@ final class Relation
      *
      * @param Container $container
      * @param Mapper $mapper
-     * @param ResourceRelation $object
+     * @param JsonApiRelation $object
      * @param SchemaFields $fields
      * @param ContextInterface $context
      * @param string $fieldName
@@ -81,7 +81,7 @@ final class Relation
     public function __construct(
         Container $container,
         Mapper $mapper,
-        ResourceRelation $object,
+        JsonApiRelation $object,
         SchemaFields $fields,
         ContextInterface $context,
         string $fieldName

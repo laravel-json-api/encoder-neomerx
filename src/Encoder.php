@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx;
 
+use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Encoder\Encoder as EncoderContract;
 use LaravelJsonApi\Contracts\Encoder\JsonApiDocument as DocumentContract;
 use LaravelJsonApi\Contracts\Resources\Container;
@@ -55,6 +56,11 @@ class Encoder implements EncoderContract
     private JsonApi $version;
 
     /**
+     * @var Request|null
+     */
+    private $request;
+
+    /**
      * @var IncludePaths|null
      */
     private ?IncludePaths $includePaths = null;
@@ -82,6 +88,16 @@ class Encoder implements EncoderContract
         $this->factory = $factory;
         $this->mapper = $mapper;
         $this->version = $version;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withRequest($request): self
+    {
+        $this->request = $request;
+
+        return $this;
     }
 
     /**
@@ -166,7 +182,8 @@ class Encoder implements EncoderContract
         $schemas = new SchemaContainer(
             $this->resources,
             $this->mapper,
-            new SchemaFields($this->includePaths ?: new IncludePaths(), $this->fieldSets ?: new FieldSets())
+            new SchemaFields($this->includePaths ?: new IncludePaths(), $this->fieldSets ?: new FieldSets()),
+            $this->request,
         );
 
         $encoder = new ExtendedEncoder($this->factory, $schemas);
