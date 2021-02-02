@@ -15,6 +15,10 @@ are considered non-breaking, as they are internal classes.)*
 - Resource meta can now contain conditional attributes, as the conditional iterator is used when
 processing meta returned by the `JsonApiResource` class.
 
+### Fixed
+- [#3](https://github.com/laravel-json-api/encoder-neomerx/issues/3)
+Add missing package discovery configuration to `composer.json`.
+
 ## [1.0.0-alpha.1] - 2021-01-25
 
 Initial release.
