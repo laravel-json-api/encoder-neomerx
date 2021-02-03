@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Fixed
 
+- Fixed relationship data returning a generator that could only be iterated once. Generators can cause errors within
+  the Neomerx parser, which seems to iterate over the relationship data more than once in some scenarios. This bug was
+  fixed by upgrading `laravel-json-api/core` to `v1.0.0-alpha.3`, which now returns an iterator that handles generators
+  from the `Resource\Container::resolve()` method.
 - Fixed the schema's `getSelfLink()` method, which was not passing the request through to the JSON:API resource object.
 
 ## [1.0.0-alpha.2] - 2021-02-02
