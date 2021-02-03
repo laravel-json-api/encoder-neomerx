@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Unreleased
+
+### Fixed
+
+- Fixed the schema's `getSelfLink()` method, which was not passing the request through to the JSON:API resource object.
+
 ## [1.0.0-alpha.2] - 2021-02-02
 
 ### Added

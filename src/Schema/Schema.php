@@ -148,7 +148,7 @@ final class Schema implements SchemaInterface
             throw new UnexpectedValueException('Expecting a resource object.');
         }
 
-        if ($link = $resource->links()->get('self')) {
+        if ($link = $resource->links($this->request)->get('self')) {
             return $this->mapper->link($link);
         }
 
