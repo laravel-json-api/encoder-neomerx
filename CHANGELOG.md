@@ -3,11 +3,11 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
-## Unreleased
+## [1.0.0-alpha.3] - 2021-02-09
 
 ### Added
 
-- Encoder now supports conditional attributes being used in the JSON:API resource relationships.
+- Encoder now supports conditional fields being used in the JSON:API resource relationships.
 
 ### Fixed
 
