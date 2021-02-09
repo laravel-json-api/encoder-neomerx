@@ -23,9 +23,11 @@ use Illuminate\Http\Request;
 use IteratorAggregate;
 use LaravelJsonApi\Contracts\Resources\Container;
 use LaravelJsonApi\Contracts\Resources\JsonApiRelation;
+use LaravelJsonApi\Core\Resources\ConditionalList;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
+use UnexpectedValueException;
 
 /**
  * Class Relationships
@@ -96,8 +98,11 @@ final class Relationships implements IteratorAggregate
      */
     public function getIterator()
     {
-        /** @var JsonApiRelation $relation */
-        foreach ($this->resource->relationships($this->request) as $relation) {
+        foreach ($this->iterator() as $relation) {
+            if (!$relation instanceof JsonApiRelation) {
+                throw new UnexpectedValueException('Unexpected resource relationship value.');
+            }
+
             $fieldName = $relation->fieldName();
 
             if ($this->fields->isFieldRequested($this->resource->type(), $fieldName)) {
@@ -111,6 +116,16 @@ final class Relationships implements IteratorAggregate
                 ))->toArray();
             }
         }
+    }
+
+    /**
+     * @return iterable
+     */
+    private function iterator(): iterable
+    {
+        return new ConditionalList(
+            $this->resource->relationships($this->request)
+        );
     }
 
 }
