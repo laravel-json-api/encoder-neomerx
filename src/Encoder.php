@@ -193,7 +193,7 @@ class Encoder implements EncoderContract
         }
 
         if ($this->fieldSets) {
-            $encoder->withFieldSets($this->fieldSets->toArray());
+            $encoder->withFieldSets($this->fieldSets->fields());
         }
 
         return $encoder;

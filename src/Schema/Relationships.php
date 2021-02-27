@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use IteratorAggregate;
 use LaravelJsonApi\Contracts\Resources\Container;
 use LaravelJsonApi\Contracts\Resources\JsonApiRelation;
+use LaravelJsonApi\Core\Resources\ConditionalField;
 use LaravelJsonApi\Core\Resources\ConditionalList;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
@@ -123,9 +124,14 @@ final class Relationships implements IteratorAggregate
      */
     private function iterator(): iterable
     {
-        return new ConditionalList(
-            $this->resource->relationships($this->request)
-        );
+        foreach (new ConditionalList($this->resource->relationships($this->request)) as $value) {
+            if ($value instanceof ConditionalField) {
+                yield $value->get();
+                continue;
+            }
+
+            yield $value;
+        }
     }
 
 }

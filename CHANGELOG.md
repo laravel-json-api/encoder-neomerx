@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## [1.0.0-alpha.4] - 2021-02-27
+
+### Changed
+
+- This package now relies on `laravel-json-api/neomerx-json-api`, a fork of `neomerx/json-api`. This was required
+  because of a [bug affecting empty to-many include paths.](https://github.com/laravel-json-api/laravel/issues/11)
+  Although a PR was sent to the Neomerx repository, there has been no activity in that repository for almost a year. The
+  fork will be maintained for use in Laravel JSON:API, but we will switch back to using the Neomerx package if it is
+  maintained in the future.
+
+### Fixed
+
+- Conditional field values are now correctly handled when iterating over a resource's relationships.
+
 ## [1.0.0-alpha.3] - 2021-02-09
 
 ### Added
