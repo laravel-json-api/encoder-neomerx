@@ -26,7 +26,7 @@
         "php": "^7.4|^8.0",
         "ext-json": "*",
         "illuminate/support": "^8.0",
-        "laravel-json-api/core": "^1.0.0-alpha.4",
+        "laravel-json-api/core": "dev-feature/countable",
         "laravel-json-api/neomerx-json-api": "^4.0.2"
     },
     "require-dev": {
