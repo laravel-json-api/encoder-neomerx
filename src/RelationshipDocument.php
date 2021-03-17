@@ -19,15 +19,16 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx;
 
+use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LaravelJsonApi\Encoder\Neomerx\Encoder\Encoder as ExtendedEncoder;
 
 class RelationshipDocument extends Document
 {
 
     /**
-     * @var object
+     * @var JsonApiResource
      */
-    private object $resource;
+    private JsonApiResource $resource;
 
     /**
      * @var string
@@ -44,14 +45,14 @@ class RelationshipDocument extends Document
      *
      * @param ExtendedEncoder $encoder
      * @param Mapper $mapper
-     * @param object $resource
+     * @param JsonApiResource $resource
      * @param string $fieldName
      * @param object|iterable|null $data
      */
     public function __construct(
         ExtendedEncoder $encoder,
         Mapper $mapper,
-        object $resource,
+        JsonApiResource $resource,
         string $fieldName,
         $data
     ) {
