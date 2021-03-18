@@ -107,16 +107,37 @@ final class Relationships implements IteratorAggregate
             $fieldName = $relation->fieldName();
 
             if ($this->fields->isFieldRequested($this->resource->type(), $fieldName)) {
-                yield $fieldName => (new Relation(
-                    $this->container,
-                    $this->mapper,
-                    $relation,
-                    $this->fields,
-                    $this->context,
-                    $fieldName
-                ))->toArray();
+                $value = $this->convert($relation)->toArray();
+
+                /**
+                 * The value could be empty, in which case we should not yield it otherwise
+                 * the Neomerx encoder ends up encoding the relationship as an empty array.
+                 * An example of when this might be legitimately empty is when the relationship
+                 * is meta-only, but the meta value is controlled by the client (for example our
+                 * countable implementation) and the client hasn't requested it.
+                 */
+                if (!empty($value)) {
+                    yield $fieldName => $value;
+                }
             }
         }
+    }
+
+    /**
+     * Convert a JSON:API relation to an schema relation.
+     *
+     * @param JsonApiRelation $relation
+     * @return Relation
+     */
+    private function convert(JsonApiRelation $relation): Relation
+    {
+        return new Relation(
+            $this->container,
+            $this->mapper,
+            $relation,
+            $this->fields,
+            $this->context,
+        );
     }
 
     /**

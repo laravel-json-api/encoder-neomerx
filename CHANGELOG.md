@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file. This projec
 ### Fixed
 
 - Conditional field values are now correctly handled when iterating over a resource's relationships.
+- When encoding relationships, do not yield a relationship value that is empty (no data, links or meta).
 
 ## [1.0.0-alpha.3] - 2021-02-09
 
