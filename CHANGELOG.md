@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## [1.0.0-beta.1] - 2021-03-30
+
+### Changed
+
+- Updated the encoder to implement changes made to the encoder interface. This removes the `withIdentifiers()` method
+  and replaces it with the `withToOne()` and `withToMany()` methods.
+
+### Fixed
+
+- When encoding relationships, do not yield a relationship value that is empty (no data, links or meta).
+
 ## [1.0.0-alpha.4] - 2021-02-27
 
 ### Changed
@@ -16,7 +27,6 @@ All notable changes to this project will be documented in this file. This projec
 ### Fixed
 
 - Conditional field values are now correctly handled when iterating over a resource's relationships.
-- When encoding relationships, do not yield a relationship value that is empty (no data, links or meta).
 
 ## [1.0.0-alpha.3] - 2021-02-09
 
