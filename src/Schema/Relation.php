@@ -22,7 +22,6 @@ namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 use LaravelJsonApi\Contracts\Resources\Container;
 use LaravelJsonApi\Contracts\Resources\JsonApiRelation;
 use LaravelJsonApi\Core\Document\ResourceIdentifier;
-use LaravelJsonApi\Core\Json\Hash;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
