@@ -22,7 +22,6 @@ namespace LaravelJsonApi\Encoder\Neomerx\Schema;
 use LaravelJsonApi\Contracts\Resources\Container;
 use LaravelJsonApi\Contracts\Resources\JsonApiRelation;
 use LaravelJsonApi\Core\Document\ResourceIdentifier;
-use LaravelJsonApi\Core\Json\Hash;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
@@ -64,11 +63,6 @@ final class Relation
     private ContextInterface $context;
 
     /**
-     * @var string
-     */
-    private string $fieldName;
-
-    /**
      * Relation constructor.
      *
      * @param Container $container
@@ -76,22 +70,19 @@ final class Relation
      * @param JsonApiRelation $object
      * @param SchemaFields $fields
      * @param ContextInterface $context
-     * @param string $fieldName
      */
     public function __construct(
         Container $container,
         Mapper $mapper,
         JsonApiRelation $object,
         SchemaFields $fields,
-        ContextInterface $context,
-        string $fieldName
+        ContextInterface $context
     ) {
         $this->container = $container;
         $this->mapper = $mapper;
         $this->relation = $object;
         $this->fields = $fields;
         $this->context = $context;
-        $this->fieldName = $fieldName;
     }
 
     /**
@@ -119,7 +110,7 @@ final class Relation
     {
         $relation = [];
         $links = $this->relation->links();
-        $meta = new Hash($this->relation->meta() ?: []);
+        $meta = $this->relation->meta();
 
         if ($this->willShowData()) {
             $relation[SchemaInterface::RELATIONSHIP_DATA] = $this->data();
@@ -131,7 +122,7 @@ final class Relation
             );
         }
 
-        if ($meta->isNotEmpty()) {
+        if (!empty($meta)) {
             $relation[SchemaInterface::RELATIONSHIP_META] = $meta;
         }
 
@@ -149,7 +140,7 @@ final class Relation
 
         return $this->fields->isRelationshipRequested(
             $this->context->getPosition()->getPath(),
-            $this->fieldName
+            $this->relation->fieldName(),
         );
     }
 

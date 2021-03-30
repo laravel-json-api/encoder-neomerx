@@ -125,11 +125,9 @@ class Encoder implements EncoderContract
      */
     public function withResource(?object $resource): DocumentContract
     {
-        if (is_object($resource) && !$resource instanceof JsonApiResource) {
-            $resource = $this->resources->create($resource);
-        }
-
-        return $this->createCompoundDocument($resource);
+        return $this->createCompoundDocument(
+            $resource ? $this->toResource($resource) : null
+        );
     }
 
     /**
@@ -145,19 +143,25 @@ class Encoder implements EncoderContract
     /**
      * @inheritDoc
      */
-    public function withIdentifiers(object $resource, string $fieldName, $identifiers): DocumentContract
+    public function withToOne(object $resource, string $fieldName, ?object $related): DocumentContract
     {
-        $document = new RelationshipDocument(
-            $this->createNeomerxEncoder(),
-            $this->mapper,
+        return $this->createRelationshipDocument(
             $resource,
             $fieldName,
-            $identifiers
+            $related ? $this->toResource($related) : null,
         );
+    }
 
-        $document->withJsonApi($this->version);
-
-        return $document;
+    /**
+     * @inheritDoc
+     */
+    public function withToMany(object $resource, string $fieldName, iterable $related): DocumentContract
+    {
+        return $this->createRelationshipDocument(
+            $resource,
+            $fieldName,
+            $this->resources->cursor($related),
+        );
     }
 
     /**
@@ -167,6 +171,31 @@ class Encoder implements EncoderContract
     private function createCompoundDocument($data): DocumentContract
     {
         $document = new CompoundDocument($this->createNeomerxEncoder(), $this->mapper, $data);
+        $document->withJsonApi($this->version);
+
+        return $document;
+    }
+
+    /**
+     * @param object $resource
+     * @param string $fieldName
+     * @param $identifiers
+     * @return RelationshipDocument
+     */
+    private function createRelationshipDocument(
+        object $resource,
+        string $fieldName,
+        $identifiers
+    ): RelationshipDocument
+    {
+        $document = new RelationshipDocument(
+            $this->createNeomerxEncoder(),
+            $this->mapper,
+            $this->toResource($resource),
+            $fieldName,
+            $identifiers
+        );
+
         $document->withJsonApi($this->version);
 
         return $document;
@@ -197,5 +226,18 @@ class Encoder implements EncoderContract
         }
 
         return $encoder;
+    }
+
+    /**
+     * @param object $object
+     * @return JsonApiResource
+     */
+    private function toResource(object $object): JsonApiResource
+    {
+        if ($object instanceof JsonApiResource) {
+            return $object;
+        }
+
+        return $this->resources->create($object);
     }
 }
