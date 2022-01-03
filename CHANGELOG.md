@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Feature
+
+- The `RelationshipDocument` now merges all relationship links. Previously it only merged the `self` and `related`
+  links.
+
 ### Fixed
 
 - [laravel-#111](https://github.com/laravel-json-api/laravel/issues/111) The `RelationshipDocument` class now handles:
