@@ -19,6 +19,8 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Encoder\Neomerx;
 
+use LaravelJsonApi\Contracts\Resources\JsonApiRelation;
+use LaravelJsonApi\Core\Document\Links;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LaravelJsonApi\Encoder\Neomerx\Encoder\Encoder as ExtendedEncoder;
 
@@ -68,9 +70,7 @@ class RelationshipDocument extends Document
     protected function serialize(): array
     {
         return $this
-            ->encoder()
-            ->withRelationshipSelfLink($this->resource, $this->fieldName)
-            ->withRelationshipRelatedLink($this->resource, $this->fieldName)
+            ->encoderWithLinks()
             ->serializeIdentifiers($this->data);
     }
 
@@ -80,10 +80,38 @@ class RelationshipDocument extends Document
     protected function encode(): string
     {
         return $this
-            ->encoder()
-            ->withRelationshipSelfLink($this->resource, $this->fieldName)
-            ->withRelationshipRelatedLink($this->resource, $this->fieldName)
+            ->encoderWithLinks()
             ->encodeIdentifiers($this->data);
+    }
+
+    /**
+     * Get the encoder with the relationship links added to it.
+     *
+     * @return ExtendedEncoder
+     */
+    private function encoderWithLinks(): ExtendedEncoder
+    {
+        $relation = $this->relation();
+        $links = $relation ? $relation->links() : new Links();
+        $encoder = $this->encoder();
+
+        if ($links->isNotEmpty()) {
+            $encoder->withLinks($this->mapper()->allLinks($links));
+        }
+
+        return $encoder;
+    }
+
+    /**
+     * @return JsonApiRelation|null
+     */
+    private function relation(): ?JsonApiRelation
+    {
+        try {
+            return $this->resource->relationship($this->fieldName);
+        } catch (\LogicException $ex) {
+            return null;
+        }
     }
 
 }

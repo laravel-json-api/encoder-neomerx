@@ -7,6 +7,12 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Fixed
 
+- [laravel-#111](https://github.com/laravel-json-api/laravel/issues/111) The `RelationshipDocument` class now handles:
+    - The relationship object not existing on the JSON:API resource (this can occur if the relationship is marked as
+      hidden).
+    - The relationship object not having any links to merge, or only having one of the `self` and `related` links.
+      Previously the document was assuming both the `self` and `related` links were present, and would fail if either
+      did not exist.
 - Fixed setting the top-level `jsonapi` value on the `Document` class, which was not setting the cast value.
 
 ## [1.0.0] - 2021-07-31
