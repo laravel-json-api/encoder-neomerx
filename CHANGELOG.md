@@ -5,20 +5,19 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
-### Feature
-
-- The `RelationshipDocument` now merges all relationship links. Previously it only merged the `self` and `related`
-  links.
-
 ### Fixed
 
-- [laravel-#111](https://github.com/laravel-json-api/laravel/issues/111) The `RelationshipDocument` class now handles:
-    - The relationship object not existing on the JSON:API resource (this can occur if the relationship is marked as
-      hidden).
-    - The relationship object not having any links to merge, or only having one of the `self` and `related` links.
-      Previously the document was assuming both the `self` and `related` links were present, and would fail if either
-      did not exist.
 - Fixed setting the top-level `jsonapi` value on the `Document` class, which was not setting the cast value.
+
+### Removed
+
+- The `RelationshipDocument` no longer merges relationship links with the top-level document links. This is because we
+  now expect the top-level links provided to the encoder to already have the relationship links merged. The `core`
+  package takes care of this in the relationship response classes, while also providing the capability for the developer
+  to turn off link merging if desired (which is a better implementation). This change is considered non-breaking because
+  the core package dependency has been upgraded and there were existing bugs in the links merging implementation within
+  the `RelationshipDocument` class. I.e. it would fail if either of the self or related links were missing, or if the
+  relationship was hidden - so removing this merging fixes bugs in the implementation.
 
 ## [1.0.0] - 2021-07-31
 
