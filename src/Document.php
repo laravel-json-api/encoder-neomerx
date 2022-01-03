@@ -81,7 +81,7 @@ abstract class Document implements JsonApiDocument
     public function withJsonApi($jsonApi): self
     {
         if ($value = JsonApi::nullable($jsonApi)) {
-            $this->jsonApi = $jsonApi;
+            $this->jsonApi = $value;
         }
 
         return $this;

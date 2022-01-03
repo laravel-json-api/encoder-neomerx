@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Unreleased
+
+### Fixed
+
+- Fixed setting the top-level `jsonapi` value on the `Document` class, which was not setting the cast value.
+
 ## [1.0.0] - 2021-07-31
 
 Initial stable release, with no changes since `1.0.0-beta.1`.
