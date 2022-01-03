@@ -24,21 +24,20 @@ use LaravelJsonApi\Encoder\Neomerx\Encoder\Encoder as ExtendedEncoder;
 
 class RelationshipDocument extends Document
 {
-
     /**
      * @var JsonApiResource
      */
-    private JsonApiResource $resource;
+    protected JsonApiResource $resource;
 
     /**
      * @var string
      */
-    private string $fieldName;
+    protected string $fieldName;
 
     /**
      * @var mixed
      */
-    private $data;
+    protected $data;
 
     /**
      * RelationshipDocument constructor.
@@ -69,8 +68,6 @@ class RelationshipDocument extends Document
     {
         return $this
             ->encoder()
-            ->withRelationshipSelfLink($this->resource, $this->fieldName)
-            ->withRelationshipRelatedLink($this->resource, $this->fieldName)
             ->serializeIdentifiers($this->data);
     }
 
@@ -81,9 +78,6 @@ class RelationshipDocument extends Document
     {
         return $this
             ->encoder()
-            ->withRelationshipSelfLink($this->resource, $this->fieldName)
-            ->withRelationshipRelatedLink($this->resource, $this->fieldName)
             ->encodeIdentifiers($this->data);
     }
-
 }

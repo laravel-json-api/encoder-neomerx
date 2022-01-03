@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## [1.1.0] - 2022-01-03
+
+### Fixed
+
+- Fixed setting the top-level `jsonapi` value on the `Document` class, which was not setting the cast value.
+
+### Removed
+
+- The `RelationshipDocument` no longer merges relationship links with the top-level document links. This is because we
+  now expect the top-level links provided to the encoder to already have the relationship links merged. The `core`
+  package takes care of this in the relationship response classes, while also providing the capability for the developer
+  to turn off link merging if desired (which is a better implementation). This change is considered non-breaking because
+  the core package dependency has been upgraded and there were existing bugs in the links merging implementation within
+  the `RelationshipDocument` class. I.e. it would fail if either of the self or related links were missing, or if the
+  relationship was hidden - so removing this merging fixes bugs in the implementation.
+
 ## [1.0.0] - 2021-07-31
 
 Initial stable release, with no changes since `1.0.0-beta.1`.

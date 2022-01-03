@@ -27,7 +27,6 @@ use LaravelJsonApi\Encoder\Neomerx\Encoder\Encoder as ExtendedEncoder;
 
 abstract class Document implements JsonApiDocument
 {
-
     /**
      * @var ExtendedEncoder
      */
@@ -81,7 +80,7 @@ abstract class Document implements JsonApiDocument
     public function withJsonApi($jsonApi): self
     {
         if ($value = JsonApi::nullable($jsonApi)) {
-            $this->jsonApi = $jsonApi;
+            $this->jsonApi = $value;
         }
 
         return $this;
@@ -225,5 +224,13 @@ abstract class Document implements JsonApiDocument
     protected function encoder(): ExtendedEncoder
     {
         return $this->encoder;
+    }
+
+    /**
+     * @return Mapper
+     */
+    protected function mapper(): Mapper
+    {
+        return $this->mapper;
     }
 }
