@@ -28,6 +28,7 @@ use LaravelJsonApi\Core\Resources\ConditionalList;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 use LaravelJsonApi\Encoder\Neomerx\Mapper;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
+use Traversable;
 use UnexpectedValueException;
 
 /**
@@ -97,7 +98,7 @@ final class Relationships implements IteratorAggregate
     /**
      * @inheritDoc
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         foreach ($this->iterator() as $relation) {
             if (!$relation instanceof JsonApiRelation) {
