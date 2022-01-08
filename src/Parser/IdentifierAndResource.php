@@ -87,7 +87,7 @@ class IdentifierAndResource extends BaseIdentifierAndResource
      */
     private function cacheMeta(): void
     {
-        if (is_null($this->meta)) {
+        if (null === $this->meta) {
             $this->meta = Json::hash(parent::getResourceMeta());
         }
     }
@@ -99,7 +99,7 @@ class IdentifierAndResource extends BaseIdentifierAndResource
      */
     private function cacheIdentifierMeta(): void
     {
-        if (is_null($this->identifierMeta)) {
+        if (null === $this->identifierMeta) {
             $this->identifierMeta = Json::hash(parent::getIdentifierMeta());
         }
     }

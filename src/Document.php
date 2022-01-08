@@ -167,7 +167,7 @@ abstract class Document implements JsonApiDocument
     /**
      * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         try {
             $this->prepareEncoder();
