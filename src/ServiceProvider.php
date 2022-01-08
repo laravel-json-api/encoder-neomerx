@@ -31,7 +31,7 @@ class ServiceProvider extends BaseServiceProvider implements DeferrableProvider
     /**
      * @inheritDoc
      */
-    public function provides()
+    public function provides(): array
     {
         return [
             EncoderFactoryContract::class,
