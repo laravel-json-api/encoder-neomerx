@@ -25,12 +25,13 @@
     "require": {
         "php": "^7.4|^8.0",
         "ext-json": "*",
-        "illuminate/support": "^8.0",
-        "laravel-json-api/core": "^1.1",
-        "laravel-json-api/neomerx-json-api": "^4.0.2"
+        "illuminate/contracts": "^8.0|^9.0",
+        "illuminate/support": "^8.0|^9.0",
+        "laravel-json-api/core": "^2.0",
+        "laravel-json-api/neomerx-json-api": "^5.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5.10"
     },
     "autoload": {
         "psr-4": {
@@ -44,7 +45,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "1.x-dev"
+            "dev-develop": "2.x-dev"
         },
         "laravel": {
             "providers": [
