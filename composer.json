@@ -28,7 +28,7 @@
         "illuminate/contracts": "^8.0|^9.0",
         "illuminate/support": "^8.0|^9.0",
         "laravel-json-api/core": "^2.0",
-        "laravel-json-api/neomerx-json-api": "^5.0"
+        "laravel-json-api/neomerx-json-api": "^5.0.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5.10"
