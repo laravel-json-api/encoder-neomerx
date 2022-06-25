@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Unreleased
+
+### Fixed
+
+- Upgraded the `laravel-json-api/neomerx-json-api` dependency to `^5.0.1`. This fixes a bug related to the top-level
+  meta member. Previously the encoder added empty meta values to the top-level member, which is incorrect.
+
 ## [2.0.0] - 2022-02-09
 
 ### Added
