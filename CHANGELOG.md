@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## [3.0.1] - 2023-02-18
+
+### Changed
+
+- Update exceptions thrown when the encoding process fails to notify developer to check previous exception for the cause
+  of the failure.
+
 ## [3.0.0] - 2023-02-14
 
 ### Changed
