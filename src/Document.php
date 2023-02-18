@@ -160,7 +160,11 @@ abstract class Document implements JsonApiDocument
         try {
             return json_decode($this->toJson(), true, 512, JSON_THROW_ON_ERROR);
         } catch (\Throwable $ex) {
-            throw new \LogicException('Unable to convert document to an array.', 0, $ex);
+            throw new \LogicException(
+                'Unable to convert document to an array. See previous exception for cause of failure.',
+                0,
+                $ex,
+            );
         }
     }
 
@@ -174,7 +178,11 @@ abstract class Document implements JsonApiDocument
 
             return $this->serialize();
         } catch (\Throwable $ex) {
-            throw new \LogicException('Unable to serialize compound document.', 0, $ex);
+            throw new \LogicException(
+                'Unable to serialize compound document. See previous exception for cause of failure.',
+                0,
+                $ex,
+            );
         }
     }
 
@@ -190,7 +198,11 @@ abstract class Document implements JsonApiDocument
 
             return $this->encode();
         } catch (\Throwable $ex) {
-            throw new \LogicException('Unable to encode compound document.', 0, $ex);
+            throw new \LogicException(
+                'Unable to encode compound document. See previous exception for cause of failure.',
+                0,
+                $ex,
+            );
         }
     }
 
