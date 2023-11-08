@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Unreleased
+
+## [3.1.0] - 2023-11-08
+
+### Changed
+
+- Encoding implementation no longer catches and re-throws exceptions when encoding compound document. Although the
+  implementation here was correct, we're getting far too many questions from developers who do not refer to the previous
+  exception even though the exception message specified that there was a previous exception.
+
 ## [3.0.1] - 2023-02-18
 
 ### Changed
