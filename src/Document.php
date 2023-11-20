@@ -40,7 +40,7 @@ abstract class Document implements JsonApiDocument
     /**
      * @var JsonApi|null
      */
-    private ?JsonApi $jsonApi;
+    private ?JsonApi $jsonApi = null;
 
     /**
      * @var Links|null
