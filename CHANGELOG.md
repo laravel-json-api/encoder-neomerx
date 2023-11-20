@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [3.1.1] - 2023-11-20
+
+### Fixed
+
+- [#5](https://github.com/laravel-json-api/encoder-neomerx/issues/5) Fix error with default value for `$jsonApi`
+  property on the `Document` class.
+
 ## [3.1.0] - 2023-11-08
 
 ### Changed
