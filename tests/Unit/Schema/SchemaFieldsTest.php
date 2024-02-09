@@ -28,7 +28,7 @@ class SchemaFieldsTest extends TestCase
     /**
      * @return array
      */
-    public function includePathProvider(): array
+    public static function includePathProvider(): array
     {
         return [
             [
@@ -104,7 +104,7 @@ class SchemaFieldsTest extends TestCase
     /**
      * @return array|array[]
      */
-    public function fieldProvider(): array
+    public static function fieldProvider(): array
     {
         return [
             [
