@@ -14,4 +14,6 @@ composer require laravel-json-api/encoder-neomerx
 
 ## License
 
-Laravel JSON:API is open-sourced software licensed under the [Apache 2.0 License](./LICENSE).
+Laravel JSON:API is open-sourced software licensed under the [MIT License](./LICENSE).
+
+The Neomerx JSON:API package uses an Apache 2.0 license.
