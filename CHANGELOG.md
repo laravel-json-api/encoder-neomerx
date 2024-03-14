@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [4.0.0] - 2024-03-14
+
+### Changed
+
+- Package is now licensed under the MIT License.
+- **BREAKING** Package now requires Laravel 11.
+- Minimum PHP version is now `8.2`.
+
 ## [3.1.1] - 2023-11-20
 
 ### Fixed
