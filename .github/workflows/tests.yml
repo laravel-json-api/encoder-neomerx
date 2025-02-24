@@ -2,9 +2,13 @@ name: Tests
 
 on:
   push:
-    branches: [ main, develop ]
+    branches:
+      - main
+      - develop
   pull_request:
-    branches: [ main, develop ]
+    branches:
+      - main
+      - develop
 
 jobs:
   build:
@@ -14,8 +18,12 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [8.2, 8.3, 8.4]
-        core: ['4.3.2', '5.0.1']
+        php: [ 8.2, 8.3, 8.4 ]
+        core: [ '4.3.2', '5.2' ]
+        laravel: [ 11, 12 ]
+        exclude:
+          - laravel: 12
+            core: '4.3.2'
 
     steps:
       - name: Checkout Code
@@ -32,6 +40,9 @@ jobs:
 
       - name: Set Laravel JSON:API Core Version
         run: composer require "laravel-json-api/core:^${{ matrix.core }}" --no-update
+
+      - name: Set Laravel Version
+        run: composer require "illuminate/contracts:^${{ matrix.laravel }}" --no-update
 
       - name: Install dependencies
         uses: nick-fields/retry@v3
