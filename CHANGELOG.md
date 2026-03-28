@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [4.3.0] - 2026-03-28
+
+### Added
+
+- Support for Laravel 13.
+
+### Changed
+
+- Dropped support for `laravel-json-api/core` v4.
+
 ## [4.2.0] - 2025-02-24
 
 ### Added
